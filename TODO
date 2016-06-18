@@ -1,0 +1,23 @@
+# TODO/FIXME
+#
+# rename "rebuild iso" to "build iso" and "build iso" to "prepare iso" and swap buttons. disable "prepare iso" if a $dir-binary already exists
+# in update tab add a button to clean apt. Add same button in Install tab.
+# in install tab add a button to choose a script/hook to do automated stuff.
+# enable "--no-install-recommends" by default; user unchek if wanted.
+# sources.list help should be in a textbox, copy/pastable.
+# before rebuilding iso: rm -rf filesystemsquash before creating new one; possibly update vmlinuz and initrd if kernel was updated?
+# FIXME: removing temp packages not working completly; cleanup file of \n chars.
+# FIXME: in ubuntu checksum always fails for one file. which one? why?
+# FIXME: after creating a debian live iso change isolinux.cfg to use initrd instead of inirtd.img and remove/replace the "@LB_BOOTAPPEND_LIVE@"
+# use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND"
+# add a port text input for "Chroot RDP"
+# FIXME
+#Object::connect: No such signal QLineEdit::textChanged()
+#Object::connect:  (sender name:   'lineEditISOPath')
+
+#
+#
+# DEPENDS (replace with temp_pkg_system installs)
+#
+# xterm (no copy/paste?)
+# rsync
