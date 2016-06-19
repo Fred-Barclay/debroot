@@ -9,7 +9,7 @@
 # IMPROV: GUI: enable "--no-install-recommends" by default; user unchek if wanted.
 # IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
 # IMPROV: GUI: add a port text input for "Chroot RDP".
-# FIXME:
+# FIXME: only happens with sudo; does not with gksudo:
 #Object::connect: No such signal QLineEdit::textChanged()
 #Object::connect:  (sender name:   'lineEditISOPath')
 # IMPROV: copyright/license.
