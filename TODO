@@ -1,7 +1,6 @@
 # TODO/FIXME
 #
 # FIXME: in install, upgrade and dist-upgrade buttons use NON_INTERACTIVE?
-# FIXME: check if live-build creates /live/initrd.img or /live/initrd for isolinux.cfg. DONE: it is to /live/initrd.img indeed. where did I get the initrd from?
 # FIXME: in debian install live-config-systemd in jessie to not remove systemd; by default live-config installs live-config-sysvinit.
 # FIXME: when chrooting to install packages always run prepare_chroot() and release_chroot() to avoid /dev/pts errors.
 # IMPROV: use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND".

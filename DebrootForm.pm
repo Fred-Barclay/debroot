@@ -500,8 +500,8 @@ sub on_pushButtonBuildLiveISO_clicked {
 			$command = "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/";
 			system( $command );
 		}
-		# fix? (check if live-build uses initrd or initrd.img in live boot option) live.cfg boot options
-		$command = "sed -i 's|initrd\.img|initrd|' $dir-binary/isolinux/live.cfg && sed -i 's|\@LB_BOOTAPPEND_LIVE@|splash quiet|' $dir-binary/isolinux/live.cfg";
+		# remove @LB_BOOTAPPEND_LIVE@ from live.cfg
+		$command = "sed -i 's|\@LB_BOOTAPPEND_LIVE@|splash quiet|' $dir-binary/isolinux/live.cfg";
 		system( $command );
 		$command = "cp $dir/boot/memtest86+.bin $dir-binary/$livesystem/memtest";
 		system( $command );
@@ -574,7 +574,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	if ( "$distro" eq "debian") {
 		$command = "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz";
 		system( $command );
-		$command = "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd";
+		$command = "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd.img";
 		system( $command );
 	} else {
 		$command = "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz";
