@@ -155,18 +155,10 @@ sub on_pushButtonUnsquash_clicked {
 	$command = "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary";
 	system( $command );
 
-	$command = "unsquashfs $dir-iso/$livesystem/filesystem.squashfs || read -p 'Error. Press any key.'";
+	$command = "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
 	$command = "umount $dir-iso";
-	system( $command );
-
-	if ( ( -e "$dir" ) && ( ! "$dir" eq "/" ) ) {
-		$command = "rm -rf $dir";
-		system( $command );
-	}
-
-	$command = "mv squashfs-root $dir";
 	system( $command );
 }
 # [1]
