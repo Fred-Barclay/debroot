@@ -192,9 +192,9 @@ sub on_pushButtonDebootstrap_clicked {
                    this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
 	system 'xterm', '-e', $program;
 	# unset rootfs hostname
-	$program = "echo $distro | tee $target/hostname ; sed -i 's|'\$(hostname))'|$distro|g' $target/etc/hosts";
+	$program = "echo $distro | tee $target/etc/hostname ; sed -i 's|'\$( hostname | sed 's|-|\-|g' )'|$distro|g' $target/etc/hosts";
 	system( $program );
-		# remove installed packages
+	# remove installed packages
 	this->remove_temp_pkg_system();
 	# make lineEdit change to check if directory exists
 	this->{ui}->{lineEditROOTFSDirectory}->setText($target);
