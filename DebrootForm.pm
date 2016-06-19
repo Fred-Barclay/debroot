@@ -253,7 +253,7 @@ sub on_pushButtonUpdate_clicked {
 sub on_pushButtonUpgrade_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
-	my $program = "sudo chroot $dir apt-get upgrade || read -p 'Error. Press any key.'";
+	my $program = "sudo chroot $dir su -l -c 'export DEBIAN_FRONTEND=noninteractive && apt-get upgrade || read -p \"Error. Press any key.\"'";
 	this->prepare_chroot($dir);
 	system 'xterm','-e', $program;
 	this->release_chroot($dir);
@@ -264,7 +264,7 @@ sub on_pushButtonUpgrade_clicked {
 sub on_pushButtonDistUpgrade_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
-	my $program = "sudo chroot $dir apt-get dist-upgrade --no-install-recommends || read -p 'Error. Press any key.'";
+	my $program = "sudo chroot $dir su -l -c 'export DEBIAN_FRONTEND=noninteractive && apt-get dist-upgrade --no-install-recommends || read -p \"Error. Press any key.\"'";
 	this->prepare_chroot($dir);
 	system 'xterm','-e', $program;
 	this->release_chroot($dir);
@@ -347,7 +347,7 @@ sub on_pushButtonInstall_clicked {
 
 	my $packages = this->{ui}->{plainTextEditInstall}->toPlainText();
 
-	my $program = "chroot $dir /bin/bash -c 'export HOME=/root; export LC_ALL=C; exec apt-get install $allowunauthenticated $noinstallrecommends $forceyes $packages'  || read -p 'Error. Press any key.'";
+	my $program = "chroot $dir su -l -c 'export DEBIAN_FRONTEND=noninteractive && apt-get install $allowunauthenticated $noinstallrecommends $forceyes $packages || read -p \"Error. Press any key.\"'";
 	this->prepare_chroot($dir);
 	system 'xterm','-e', $program;
 	this->release_chroot($dir);
