@@ -1,5 +1,7 @@
 # TODO/FIXME
 #
+# FIXME: to get --varian=minbase working in debian install sysvinit-core/systemd-sysv in wheezy/others if none is installed, including upstart.
+# IMPROV: install plymouth-themes-all/plymouth-themes in wheezy/others in debian to have splash.
 # IMPROV: use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND".
 #create functions run_system("ls $dir-binary"); and run_chroot($dir,"apt-get update");
 # FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare iso" and swap buttons. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
