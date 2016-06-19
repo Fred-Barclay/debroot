@@ -753,7 +753,7 @@ sub remove_temp_pkg_chroot {
 		return 0;
 	}
 
-	$command = "chroot $dir su -l -c 'export SUDO_FORCE_REMOVE=yes && apt-get remove --purge $packages'";
+	$command = "chroot $dir su -l -c 'export SUDO_FORCE_REMOVE=yes && apt-get remove --purge $packages || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
 	$command = "chroot $dir apt-get autoremove --purge -y || read -p 'Error. Press any key.'";
