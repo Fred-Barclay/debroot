@@ -1,6 +1,7 @@
 # TODO/FIXME
 #
-# FIXME: to get --varian=minbase working in debian install sysvinit-core/systemd-sysv in wheezy/others if none is installed, including upstart.
+# FIXME: in debian, if isc-dhcp-client is not already installed, install ifupdown, ifplugd and isc-dhcp-client to have at least wired networking on boot.
+# FIXME: in debian install sysvinit-core/systemd-sysv in wheezy/others if none is installed, including upstart; install the according live-config-* package to get --varian=minbase working.
 # IMPROV: install plymouth-themes-all/plymouth-themes in wheezy/others in debian to have splash.
 # IMPROV: use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND".
 #create functions run_system("ls $dir-binary"); and run_chroot($dir,"apt-get update");
