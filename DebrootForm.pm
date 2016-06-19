@@ -630,25 +630,31 @@ sub on_pushButtonBackupROOTFS_clicked {
 
 # [1]
 sub install_temp_pkg_system {
-	my $packages = "@_";
+	my ( @packages ) = @_;
 
+	@packages = split(' ',"@packages");
+
+	my $packages = "@packages";
 	my $command = undef;
 
 	# only install non-installed packages
 	my $package = undef;
-	foreach ($packages) {
+	my $result = undef;
+	foreach (@packages) {
 		$package = $_;
 		$command = "dpkg -s $package > /dev/null 2>&1";
 		system ( $command );
-		my $result = $?;
+		$result = $?;
+		print "result: $result\n";
 		if ( $result == 0 ) {
+			print "package $package was already installed.\n";
 			# remove $package from $packages
 			$packages =~ s/$package//;
 		}
 	}
 
 	if ( $packages =~ /^ *$/ ) {
-		print "all is installed.";
+		print "all is already installed.";
 		return 0;
 	}
 
@@ -663,25 +669,31 @@ sub install_temp_pkg_system {
 # [1]
 sub install_temp_pkg_chroot {
 	my $dir = shift;
-	my $packages = "@_";
+	my ( @packages ) = @_;
 
+	@packages = split(' ',"@packages");
+
+	my $packages = "@packages";
 	my $command = undef;
 
 	# only install non-installed packages
 	my $package = undef;
-	foreach ($packages) {
+	my $result = undef;
+	foreach (@packages) {
 		$package = $_;
 		$command = "chroot $dir dpkg -s $package > /dev/null 2>&1";
 		system ( $command );
-		my $result = $?;
+		$result = $?;
+		print "result: $result\n";
 		if ( $result == 0 ) {
+			print "package $package was already installed.\n";
 			# remove $package from $packages
 			$packages =~ s/$package//;
 		}
 	}
 
 	if ( $packages =~ /^ *$/ ) {
-		print "all is installed.";
+		print "all is already installed.";
 		return 0;
 	}
 
@@ -703,7 +715,10 @@ sub remove_temp_pkg_system {
 		return 0;
 	}
 
-	my $packages = `cat /tmp/temp_pkg_system | sed ':a;N;\$!ba;s|\\n| |g'`;
+	my $packages = `cat /tmp/temp_pkg_system`;
+	# remove all \n and replace with space
+	$packages =~ s/\n/ /g;
+
 	my $command = undef;
 
 	print "removing temporary packages from system.\n";
@@ -736,7 +751,10 @@ sub remove_temp_pkg_chroot {
 		return 0;
 	}
 
-	my $packages = `cat /tmp/temp_pkg_chroot | sed ':a;N;\$!ba;s|\\n| |g'`;
+	my $packages = `cat /tmp/temp_pkg_chroot`;
+	# remove all \n and replace with space
+	$packages =~ s/\n/ /g;
+
 	my $command = undef;
 
 	print "removing temporary packages from chroot $dir.\n";
@@ -753,7 +771,7 @@ sub remove_temp_pkg_chroot {
 		return 0;
 	}
 
-	$command = "chroot $dir su -l -c 'export SUDO_FORCE_REMOVE=yes && apt-get remove --purge $packages || read -p 'Error. Press any key.'";
+	$command = "chroot $dir su -l -c 'export SUDO_FORCE_REMOVE=yes && apt-get remove --purge $packages || read -p \"Error. Press any key.\"'";
 	system 'xterm', '-e', $command;
 
 	$command = "chroot $dir apt-get autoremove --purge -y || read -p 'Error. Press any key.'";
