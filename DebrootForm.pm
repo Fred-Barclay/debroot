@@ -192,7 +192,8 @@ sub on_pushButtonDebootstrap_clicked {
                    this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
 	system 'xterm', '-e', $program;
 	# unset rootfs hostname
-	$program = "echo $distro | tee $target/etc/hostname ; sed -i 's|'\$( hostname | sed 's|-|\-|g' )'|$distro|g' $target/etc/hosts";
+	$program = "echo $distro | tee $target/etc/hostname";
+	# "sed -i 's|'\$( hostname | sed 's|-|\-|g' )'|$distro|g' $target/etc/hosts"
 	system( $program );
 	# remove installed packages
 	this->remove_temp_pkg_system();
@@ -535,13 +536,16 @@ sub on_pushButtonBuildLiveISO_clicked {
 	## run 'dbus-uuidgen > /var/lib/dbus/machine-id' in chroot and stop dbus with '/etc/init.d/dbus stop' so it doesnt leave /run/dbus/system_bus_socket behind.
 	## install casper or live-boot in chroot
 	### and also install a kernel in none is present (from debootstrap)
+	my $live_packages = "";
 	my $linux_packages = "";
+	my $additional_packages = "";
 	if ( "$distro" eq "ubuntu") {
+		$live_packages = "casper lupin-casper";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			$linux_packages = "linux-image-generic";
 		}
-		this->install_temp_pkg_chroot($dir, "casper lupin-casper $linux_packages");
 	} else {
+		$live_packages = "live-boot live-config live-tools sudo user-setup";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			my $arch = `chroot $dir dpkg --print-architecture`;
 			if ( "$arch" eq "amd64\n") {
@@ -549,12 +553,30 @@ sub on_pushButtonBuildLiveISO_clicked {
 			} else {
 				$linux_packages = "linux-image-686";
 			}
-			if ( "$release" eq "jessie" ) {
-				$linux_packages = $linux_packages . " live-config-systemd";
+			if ( ( ! -d "$dir/usr/share/doc/sysvinit-core" ) && ( ! -d "$dir/usr/share/doc/sysvinit" ) ) {
+				if ( "$release" eq "wheezy" ) {
+					$additional_packages = $additional_packages . " sysvinit";
+				} else {
+					$additional_packages = $additional_packages . " systemd-sysv";
+				}
+				if ( "$release" eq "jessie" ) {
+					$live_packages = $live_packages . " live-config-systemd";
+				}
+			}
+			if ( ( ! -d "$dir/usr/share/doc/plymouth-themes" ) && ( ! -d "$dir/usr/share/doc/plymouth-themes-all" ) ) {
+				if ( "$release" eq "wheezy" ) {
+					$additional_packages = $additional_packages . " plymouth-themes-all";
+				} else {
+					$additional_packages = $additional_packages . " plymouth-themes";
+				}
+			}
+			if ( ! -d "$dir/usr/share/doc/isc-dhcp-client" ) {
+				$additional_packages = $additional_packages . " ifupdown ifplugd isc-dhcp-client";
 			}
 		}
-		this->install_temp_pkg_chroot($dir, "live-boot live-config live-tools sudo user-setup $linux_packages");
 	}
+	# install packages in chroot
+	this->install_temp_pkg_chroot($dir, "$live_packages $linux_packages $additional_packages");
 	## run apt-get clean in chroot
 	$command = "chroot $dir apt-get clean";
 	system( $command );
