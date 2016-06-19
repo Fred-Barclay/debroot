@@ -545,12 +545,9 @@ sub on_pushButtonBuildLiveISO_clicked {
 			} else {
 				$linux_packages = "linux-image-686";
 			}
-			#if ( ( "$release" eq "wheezy" ) || ( ! "$release" eq "jessie" ) ) {
-			#	print "nothing to do\n";
-			#} else {
-			#	print "JESSIE ONWARDS!\n";
-			#	$linux_packages = $linux_packages . " firmware-linux-free";
-			#}
+			if ( "$release" eq "jessie" ) {
+				$linux_packages = $linux_packages . " live-config-systemd";
+			}
 		}
 		this->install_temp_pkg_chroot($dir, "live-boot live-config live-tools sudo user-setup $linux_packages");
 	}
