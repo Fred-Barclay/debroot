@@ -1,7 +1,5 @@
 # TODO/FIXME
 #
-# FIXME: when chrooting to install packages always run prepare_chroot() and release_chroot() to avoid /dev/pts errors.
-# FIXME: when building live change $dir/hostname and $dir/hosts from system hostname to "debian" and "ubuntu", respectively.
 # FIXME: before rebuilding iso: rm -rf filesystem.squashfs before creating new one; possibly update vmlinuz and initrd if kernel was updated?
 # IMPROV: use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND".
 #create functions run_system("ls $dir-binary"); and run_chroot($dir,"apt-get update");

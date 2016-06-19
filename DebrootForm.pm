@@ -191,7 +191,10 @@ sub on_pushButtonDebootstrap_clicked {
 	Qt::MessageBox::about(this, this->tr('Please wait'),
                    this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
 	system 'xterm', '-e', $program;
-	# remove installed packages
+	# unset rootfs hostname
+	$program = "echo $distro | tee $target/hostname ; sed -i 's|'\$(hostname))'|$distro|g' $target/etc/hosts";
+	system( $program );
+		# remove installed packages
 	this->remove_temp_pkg_system();
 	# make lineEdit change to check if directory exists
 	this->{ui}->{lineEditROOTFSDirectory}->setText($target);
@@ -760,6 +763,8 @@ sub remove_temp_pkg_chroot {
 		return 0;
 	}
 
+	this->prepare_chroot($dir);
+
 	$command = "chroot $dir su -l -c 'export SUDO_FORCE_REMOVE=yes && apt-get remove --purge $packages || read -p \"Error. Press any key.\"'";
 	system 'xterm', '-e', $command;
 
@@ -768,6 +773,8 @@ sub remove_temp_pkg_chroot {
 
 	$command = "chroot $dir apt-get clean";
 	system( $command );
+
+	this->release_chroot($dir);
 
 	unlink "/tmp/temp_pkg_chroot";
 }
