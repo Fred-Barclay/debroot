@@ -414,7 +414,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	my $uefi = "0";
 	if ( -e "$dir-binary/boot/grub/efi.img" ) {
-		print "found uefi dir.";
+		print "found uefi dir.\n";
 		$uefi = "1";
 	}
 
@@ -646,7 +646,7 @@ sub install_temp_pkg_system {
 	}
 
 	if ( $packages =~ /^ *$/ ) {
-		print "all is already installed.";
+		print "all is already installed.\n";
 		return 0;
 	}
 
@@ -685,7 +685,7 @@ sub install_temp_pkg_chroot {
 	}
 
 	if ( $packages =~ /^ *$/ ) {
-		print "all is already installed.";
+		print "all is already installed.\n";
 		return 0;
 	}
 
@@ -759,7 +759,7 @@ sub remove_temp_pkg_chroot {
 	}
 
 	if ( $packages =~ /^ *$/ ) {
-		print "all is installed.";
+		print "all is installed.\n";
 		return 0;
 	}
 
