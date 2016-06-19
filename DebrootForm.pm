@@ -404,6 +404,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	this->install_temp_pkg_system("squashfs-tools xorriso");
 
+	unlink "$dir-binary/$livedir/filesystem.squashfs";
 	$command = "mksquashfs $dir $dir-binary/$livedir/filesystem.squashfs || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
