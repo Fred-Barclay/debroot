@@ -3,10 +3,10 @@
 # FIXME: in install, upgrade and dist-upgrade buttons use NON_INTERACTIVE?
 # FIXME: in debian install live-config-systemd in jessie to not remove systemd; by default live-config installs live-config-sysvinit.
 # FIXME: when chrooting to install packages always run prepare_chroot() and release_chroot() to avoid /dev/pts errors.
-# IMPROV: use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND".
-#create functions run_system("ls $dir-binary"); and run_chroot($dir,"apt-get update");
 # FIXME: when building live change $dir/hostname and $dir/hosts from system hostname to "debian" and "ubuntu", respectively.
 # FIXME: before rebuilding iso: rm -rf filesystem.squashfs before creating new one; possibly update vmlinuz and initrd if kernel was updated?
+# IMPROV: use for chroots calls >> su -l -c "export LC_ALL=C ; export LANGUAGE=C ; export LANG=C ; $SUPPLIED_COMMAND".
+#create functions run_system("ls $dir-binary"); and run_chroot($dir,"apt-get update");
 # FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare iso" and swap buttons. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
 # IMPROV: GUI: set default debian release to "jessie" and default ubuntu release to "xenial".
 # IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
