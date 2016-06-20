@@ -627,6 +627,15 @@ sub on_pushButtonBuildLiveISO_clicked {
 	## remove casper or live-boot in chroot
 	## cleanup /var/lib/dbus/machine-id in chroot
 
+	# In ubuntu resolvconf keeps debootstrap resolv.conf. Unset it.
+	# See <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>
+	#if ( ( -e "$dir/etc/resolvconf/resolv.conf.d/head" ) && ( -e "$dir/etc/resolvconf/resolv.conf.d/original" ) ) {
+	#	unlink "$dir/etc/resolvconf/resolv.conf.d/head";
+	#	unlink "$dir/etc/resolvconf/resolv.conf.d/original";
+	#	$command = "touch $dir/etc/resolvconf/resolv.conf.d/head; touch $dir/etc/resolvconf/resolv.conf.d/original";
+	#	system( $command );
+	#}
+
 	#this->on_pushButtonRebuildISO_clicked();
 	#QMetaObject::invokeMethod(this->{ui}->{pushButtonRebuildISO}, "clicked");
 

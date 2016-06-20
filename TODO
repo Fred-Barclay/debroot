@@ -18,6 +18,7 @@
 # IMPROV: support UEFI.
 # IMPROV: upgrade livecd button: unsquash; remove casper from chroot to update initramfs; run dist-upgrade to update kernel; update vmlinuz and initrd.lz; reinstall casper in chroot.
 # IMPROV: build a livecd with this program to create livecd of installed systems to another disk, like clonezilla/systemrescuecd/gparted.
+# FIXME: see <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>. It happens if one doesnt install network-manager in live image.
 #
 #
 # DEPENDS (replace with temp_pkg_system installs)
