@@ -411,7 +411,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	unlink "$dir-binary/md5sum.txt";
 
-	$command = "cd $dir-binary && find -type f -print0 | xargs -0 md5sum | grep -v isolinux/boot.cat | grep -v isolinux/isohdpfx.bin | grep -v isolinux/isolinux.bin | grep -v isolinux/isolinux.bin | tee md5sum.txt || read -p 'Error. Press any key.'";
+	$command = "cd $dir-binary && find -type f ! -path './isolinux/isolinux.bin' ! -path './isolinux/boot.cat' ! -path './isolinux/isohdpfx.bin' ! -path './boot/boot.bin' ! -path './boot/grub/stage2_eltorito' ! -path './*SUMS' ! -path './*sum.txt' -print0 | xargs -0 md5sum | sort -z | tee md5sum.txt || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
 	my $uefi = "0";
@@ -544,6 +544,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			$linux_packages = "linux-image-generic";
 		}
+		$additional_packages = "plymouth-theme-ubuntu-text";
 	} else {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
