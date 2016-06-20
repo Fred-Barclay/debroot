@@ -426,6 +426,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	#} else {
 	#	$command = "xorriso -as mkisofs -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso $dir-binary || read -p 'Error. Press any key.'";
 	#}
+	unlink "$dir.iso";
 	$command = "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso . || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
@@ -525,7 +526,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 			system( $command );
 			$command = "cp $dir/usr/lib/ISOLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1";
 			system( $command );
-			$command = "cp $dir//usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/";
+			$command = "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/";
 			system( $command );
 		}
 		$command = "mkdir -p $dir-binary/install; cp $dir/boot/memtest86+.bin $dir-binary/install/mt86plus";
@@ -539,12 +540,17 @@ sub on_pushButtonBuildLiveISO_clicked {
 	my $live_packages = "";
 	my $linux_packages = "";
 	my $additional_packages = "";
+	# Always install dhcp packages if none is installed.
+	# Needed to get dhcp networking from a bare minbase variant chroot.
+	if ( ! -d "$dir/usr/share/doc/isc-dhcp-client" ) {
+		$additional_packages = $additional_packages . " ifupdown ifplugd isc-dhcp-client";
+	}
 	if ( "$distro" eq "ubuntu") {
 		$live_packages = "casper lupin-casper";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			$linux_packages = "linux-image-generic";
 		}
-		$additional_packages = "plymouth-theme-ubuntu-text";
+		$additional_packages = $additional_packages . " plymouth-theme-ubuntu-text";
 	} else {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
@@ -570,9 +576,6 @@ sub on_pushButtonBuildLiveISO_clicked {
 				} else {
 					$additional_packages = $additional_packages . " plymouth-themes";
 				}
-			}
-			if ( ! -d "$dir/usr/share/doc/isc-dhcp-client" ) {
-				$additional_packages = $additional_packages . " ifupdown ifplugd isc-dhcp-client";
 			}
 		}
 	}
@@ -609,7 +612,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 		`ls $dir-binary/$livesystem/`;
 		$command = "zcat $dir-binary/$livesystem/initrd | lzma -c > $dir-binary/$livesystem/initrd.lz || read -p 'Error. Press any key.'";
 		system 'xterm', '-e', $command;
-		$command = "rm $dir-binary/$livesystem/vmlinuz-*; rm $dir-binary/$livesystem/initrd";
+		$command = "rm $dir-binary/$livesystem/initrd";
 		system( $command );
 	}
 
