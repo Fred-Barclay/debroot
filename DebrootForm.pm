@@ -45,7 +45,7 @@ sub NEW {
 	this->{ui}->{radioButtonDebian}->setChecked('true');
 	# add possible debootstrap architectures
 	my $sysarch = `dpkg --print-architecture`;
-	if ( "$sysarch" eq "amd64\n") {
+	if ( "$sysarch" eq "amd64\n" ) {
 		#this->{ui}->{comboBoxArch}->insertItem(0,'amd64');
 		this->{ui}->{comboBoxArch}->addItem('amd64');
 	}
@@ -73,7 +73,7 @@ sub on_radioButtonDebian_toggled {
 		my @releases = ('wheezy', 'jessie', 'stretch', 'sid');
 		my $release = undef;
 		foreach $release (@releases) {
-			this->{ui}->{comboBoxRelease}->addItem($release);
+			this->{ui}->{comboBoxRelease}->addItem( $release );
 		}
 	}
 }
@@ -88,7 +88,7 @@ sub on_radioButtonUbuntu_toggled {
 		my @releases = ('trusty', 'xenial');
 		my $release = undef;
 		foreach $release (@releases) {
-			this->{ui}->{comboBoxRelease}->addItem($release);
+			this->{ui}->{comboBoxRelease}->addItem( $release );
 		}
 	}
 }
@@ -98,7 +98,7 @@ sub on_radioButtonUbuntu_toggled {
 sub on_lineEditROOTFSDirectory_textChanged {
 	my ( $value ) = @_;
 	# dont enable debootstrap button if 1) no text was entered; 2) if directory already exists; or 3) a file exists.
-	if ( (!this->{ui}->{lineEditROOTFSDirectory}->displayText() eq "") && ( ! -d this->{ui}->{lineEditROOTFSDirectory}->displayText() ) && ( ! -e this->{ui}->{lineEditROOTFSDirectory}->displayText() ) ) {
+	if ( (!this->{ui}->{lineEditROOTFSDirectory}->displayText() eq "" ) && ( ! -d this->{ui}->{lineEditROOTFSDirectory}->displayText() ) && ( ! -e this->{ui}->{lineEditROOTFSDirectory}->displayText() ) ) {
 		# enable debootstrap button
 		this->{ui}->{pushButtonDebootstrap}->setEnabled('true');
 	} else {
@@ -106,7 +106,7 @@ sub on_lineEditROOTFSDirectory_textChanged {
 		this->{ui}->{pushButtonDebootstrap}->setEnabled(0);
 	}
 	# dont enable unsquash button if 1) no text was entered; 2) if no iso file was selected.
-	if ( (!this->{ui}->{lineEditROOTFSDirectory}->displayText() eq "") && ( !this->{ui}->{lineEditISOPath}->displayText() eq "") ) {
+	if ( ( !this->{ui}->{lineEditROOTFSDirectory}->displayText() eq "" ) && ( !this->{ui}->{lineEditISOPath}->displayText() eq "" ) ) {
 		# enable debootstrap button
 		this->{ui}->{pushButtonUnsquash}->setEnabled('true');
 	} else {
@@ -119,8 +119,8 @@ sub on_lineEditROOTFSDirectory_textChanged {
 # [1]
 sub on_pushButtonSelectISO_clicked {
 	my ( $value ) = @_;
-	my $file = Qt::FileDialog::getOpenFileName(this,"Select ISO files", "/media/", "iso files (*.iso)");
-	this->{ui}->{lineEditISOPath}->setText($file);
+	my $file = Qt::FileDialog::getOpenFileName( this, "Select ISO files", "/media/", "iso files (*.iso)" );
+	this->{ui}->{lineEditISOPath}->setText( $file );
 	# enable rebuild live iso button
 	this->{ui}->{pushButtonRebuildLiveISO}->setEnabled(1);
 	# disabble build live iso button
@@ -132,7 +132,7 @@ sub on_pushButtonSelectISO_clicked {
 # [1]
 sub disableUnsquashButton {
 	my ( $value ) = @_;
-	this->{ui}->{pushButtonUnsquash}->setEnabled(!(this->{ui}->{lineEditISOPath}->toPlainText() eq ""));
+	this->{ui}->{pushButtonUnsquash}->setEnabled(!( this->{ui}->{lineEditISOPath}->toPlainText() eq "" ));
 }
 # [1]
 
@@ -148,7 +148,7 @@ sub on_pushButtonUnsquash_clicked {
 
 	this->run_system( "mount -o loop $iso $dir-iso" );
 
-	my $livesystem = this->get_livesystem("$dir-iso");
+	my $livesystem = this->get_livesystem( "$dir-iso" );
 
 	this->run_system( "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary" );
 
@@ -179,7 +179,7 @@ sub on_pushButtonDebootstrap_clicked {
 	# debootraping a possible foreign release.
 	my $distro = this->get_selected_distro();
 	# install distro archive keyring
-	this->install_temp_pkg_system("debootstrap $distro-archive-keyring");
+	this->install_temp_pkg_system( "debootstrap $distro-archive-keyring" );
 	# start debootstrap with all options
 	#Qt::MessageBox::about(this, this->tr('Please wait'),
     #               this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
@@ -189,10 +189,10 @@ sub on_pushButtonDebootstrap_clicked {
 	# remove installed packages
 	this->remove_temp_pkg_system();
 	# make lineEdit change to check if directory exists
-	this->{ui}->{lineEditROOTFSDirectory}->setText($target);
+	this->{ui}->{lineEditROOTFSDirectory}->setText( $target );
 	# enable debootstrap button
-	this->{ui}->{pushButtonDebootstrap}->setText('debootstrap');
-	this->{ui}->{pushButtonDebootstrap}->setEnabled(1);
+	this->{ui}->{pushButtonDebootstrap}->setText( 'debootstrap' );
+	this->{ui}->{pushButtonDebootstrap}->setEnabled( 1 );
 }
 # [1]
 
@@ -203,15 +203,15 @@ sub on_pushButtonRead_clicked {
 	my $sourcesfile = "$dir"."/etc/apt/sources.list";
 	my $sourcescontent;
 	# read actual sources.list and put it in plainTextEditSourcesList
-	open(my $fh, "<", "$sourcesfile")
+	open( my $fh, "<", "$sourcesfile" )
 		|| die "Can't open < $sourcesfile: $!";
 	{
 		local $/;
 		$sourcescontent = <$fh>;
 	}
-	close($fh)
+	close( $fh )
 		|| warn "close $sourcesfile failed: $!";
-	this->{ui}->{plainTextEditSourcesList}->setPlainText("$sourcescontent");
+	this->{ui}->{plainTextEditSourcesList}->setPlainText( "$sourcescontent" );
 }
 # [1]
 
@@ -222,13 +222,13 @@ sub on_pushButtonWrite_clicked {
 	my $sourcesfile = "$dir"."/etc/apt/sources.list";
 	my $sourcescontent = this->{ui}->{plainTextEditSourcesList}->toPlainText();
 	# write actual content of plainTextEditSourcesList to sources.list
-	open(my $fh, ">", "$sourcesfile")
+	open( my $fh, ">", "$sourcesfile" )
 		|| die "Can't open > $sourcesfile: $!";
 	{
 		local $/;
 		print $fh $sourcescontent;
 	}
-	close($fh)
+	close( $fh )
 		|| warn "close $sourcesfile failed: $!";
 }
 # [1]
@@ -270,7 +270,7 @@ sub on_pushButtonSourcesHelp_clicked {
 	my $text2;
 
 	$text1 = "sources.list for $distro $release:";
-	if ( "$distro" eq "debian") {
+	if ( "$distro" eq "debian" ) {
 		$text2 = "# sources.list for $distro $release\n
 deb http://ftp.debian.org/debian/ $release main contrib non-free\n
 deb-src http://ftp.debian.org/debian/ $release  main contrib non-free\n
@@ -298,8 +298,8 @@ deb-src http://archive.ubuntu.com/ubuntu/ $release-backports main restricted uni
 \n";
 	}
 	Qt::MessageBox::about(this,
-		this->tr("$text1"),
-		this->tr("$text2"));
+		this->tr( "$text1" ),
+		this->tr( "$text2" ));
 }
 # [1]
 
@@ -313,7 +313,7 @@ sub on_pushButtonInstallHelp_clicked {
 # [1]
 sub disableInstallButton {
 	my ( $value ) = @_;
-	this->{ui}->{pushButtonInstall}->setEnabled(!(this->{ui}->{plainTextEditInstall}->toPlainText() eq ""));
+	this->{ui}->{pushButtonInstall}->setEnabled(!( this->{ui}->{plainTextEditInstall}->toPlainText() eq "" ));
 }
 # [1]
 
@@ -366,7 +366,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	print "livedir: $livedir\n";
 
-	if ( "$livedir" eq "casper") {
+	if ( "$livedir" eq "casper" ) {
 		# regenerate manifest
 		$command = "chroot $dir dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest";
 		system ( $command );	# cant use run_chroot() because of quotes?
@@ -380,7 +380,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	}
 
-	this->install_temp_pkg_system("squashfs-tools xorriso");
+	this->install_temp_pkg_system( "squashfs-tools xorriso" );
 
 	unlink "$dir-binary/$livedir/filesystem.squashfs";
 	this->run_system_terminal( "mksquashfs $dir $dir-binary/$livedir/filesystem.squashfs" );
@@ -405,7 +405,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
 
 	this->remove_temp_pkg_system();
-	this->remove_temp_pkg_chroot($dir);
+	this->remove_temp_pkg_chroot( $dir );
 
 }
 # [1]
@@ -450,20 +450,20 @@ sub on_pushButtonBuildLiveISO_clicked {
 	if ( !( "$release" eq "jessie" ) ) {
 		$syslinux_theme = "syslinux-themes-$distro";
 	} else {
-		this->fix_syslinux_theme_jessie($dir);
+		this->fix_syslinux_theme_jessie( $dir );
 		$syslinux_theme = "";
 	}
-	if ( "$distro" eq "ubuntu") {
+	if ( "$distro" eq "ubuntu" ) {
 		$syslinux_theme = $syslinux_theme . " gfxboot-theme-ubuntu";
 	}
 	#### FIXME: what about installing to $dir-binary, as bellow in debian?
 	### on debian install syslinux-theme-ubuntu (except for jessie, do it manually -t jessie)
-	this->install_temp_pkg_chroot($dir, "$syslinux_packages $syslinux_theme");
+	this->install_temp_pkg_chroot( $dir, "$syslinux_packages $syslinux_theme" );
 	#### donwload syslinux-themes-debian-wheezy and install it manually in $dir-binary:
 	#	cp chroot/usr/share/syslinux/themes/debian-wheezy/isolinux-live/splash.png binary/isolinux/
 	#	cp chroot/boot/memtest86+.bin binary/live/memtest
 	#	cp -n chroot/usr/lib/syslinux/modules/bios/* binary/isolinux/
-	if ( "$distro" eq "debian") {
+	if ( "$distro" eq "debian" ) {
 		this->run_system( "cp -aL $dir/usr/share/syslinux/themes/debian-wheezy/isolinux-live/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 		if ( "$release" eq "wheezy" ) {
 			this->run_system( "cp $dir/usr/lib/syslinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
@@ -479,7 +479,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	} else {
 		this->run_system( "tar -xzf $dir/usr/share/gfxboot-theme-ubuntu/bootlogo.tar.gz -C $dir-binary/isolinux/" );
 		this->run_system( "cp -aL $dir/usr/share/syslinux/themes/$distro-$release/isolinux-live/* $dir-binary/isolinux/" );
-		if ( !("$release" eq "xenial") ) {
+		if ( !( "$release" eq "xenial" ) ) {
 			this->run_system( "cp $dir/usr/lib/syslinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 			this->run_system( "cp $dir/usr/lib/isolinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 		} else {
@@ -490,7 +490,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 		this->run_system( "mkdir -p $dir-binary/install; cp $dir/boot/memtest86+.bin $dir-binary/install/mt86plus" );
 	}
 
-	this->install_temp_pkg_chroot($dir,"dbus");
+	this->install_temp_pkg_chroot( $dir, "dbus" );
 	## run 'dbus-uuidgen > /var/lib/dbus/machine-id' in chroot and stop dbus with '/etc/init.d/dbus stop' so it doesnt leave /run/dbus/system_bus_socket behind.
 	## install casper or live-boot in chroot
 	### and also install a kernel in none is present (from debootstrap)
@@ -502,7 +502,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	if ( ! -d "$dir/usr/share/doc/isc-dhcp-client" ) {
 		$additional_packages = $additional_packages . " ifupdown ifplugd isc-dhcp-client";
 	}
-	if ( "$distro" eq "ubuntu") {
+	if ( "$distro" eq "ubuntu" ) {
 		$live_packages = "casper lupin-casper";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			$linux_packages = "linux-image-generic";
@@ -512,7 +512,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			my $arch = `chroot $dir dpkg --print-architecture`;
-			if ( "$arch" eq "amd64\n") {
+			if ( "$arch" eq "amd64\n" ) {
 				$linux_packages = "linux-image-amd64";
 			} else {
 				$linux_packages = "linux-image-686";
@@ -537,48 +537,23 @@ sub on_pushButtonBuildLiveISO_clicked {
 		}
 	}
 	# install packages in chroot
-	this->install_temp_pkg_chroot($dir, "$live_packages $linux_packages $additional_packages");
+	this->install_temp_pkg_chroot( $dir, "$live_packages $linux_packages $additional_packages" );
 	## run apt-get clean in chroot
 	this->run_chroot( $dir, "apt-get clean" );
 
-	## copy init files to $dir-binary
-	### if debian
-	#	cp $LIVE_TEMP_DIR/boot/vmlinuz-* "$OUTPUT_DIR"/binary/$LIVE_DIR/vmlinuz
-	#	cp $LIVE_TEMP_DIR/boot/initrd.img-* "$OUTPUT_DIR"/binary/$LIVE_DIR/initrd
-	### if ubuntu
-	#	# install lzma
-	#	apt-get install lzma -y --force-yes
-	#	# copy the one kernel into it's expected place
-	#	mv binary/casper/vmlinuz* binary/casper/vmlinuz
-	#	# the config is looking for an lzma compressed initrd
-	#	zcat binary/casper/initrd.img* | lzma -c --best > binary/casper/initrd.lz
-	#	# remove the old one
-	#	rm binary/casper/initrd.img*
-	if ( "$distro" eq "debian") {
+	if ( "$distro" eq "debian" ) {
 		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz" );
 		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd.img" );
 	} else {
 		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz" );
 		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd" );
-		this->install_temp_pkg_system("lzma");
+		this->install_temp_pkg_system( "lzma" );
 		`ls $dir-binary/$livesystem/`;
 		this->run_system_terminal( "zcat $dir-binary/$livesystem/initrd | lzma -c > $dir-binary/$livesystem/initrd.lz" );
 		this->run_system( "rm $dir-binary/$livesystem/initrd" );
 	}
 
-	## copy isolinux files to $dir-binary/isolinux/
-	## create isolinux.cfg
-	## update isolinux.cfg with ubuntu or debian options
-	# call on_pushButtonRebuildISO_clicked??
-	## create squashfs from the chroot to $dir-binary/$isolive/filesystem.squashfs with '-comp xz -e boot' options
-	## build iso-hybrid
-
-	## remove syslinux and others (remove only the installed packages from temp list)
-	## remove squashfs-tools xorriso in chroot (remove only the installed packages from temp list)
-	#this->remove_temp_pkg_chroot($dir);
 	this->remove_temp_pkg_system();
-	## remove casper or live-boot in chroot
-	## cleanup /var/lib/dbus/machine-id in chroot
 
 	# In ubuntu resolvconf keeps debootstrap resolv.conf. Unset it.
 	# See <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>
@@ -590,8 +565,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	#}
 
 	#this->on_pushButtonRebuildISO_clicked();
-	#QMetaObject::invokeMethod(this->{ui}->{pushButtonRebuildISO}, "clicked");
-
+	#QMetaObject::invokeMethod( this->{ui}->{pushButtonRebuildISO}, "clicked" );
 }
 # [1]
 
@@ -609,7 +583,7 @@ sub on_pushButtonBackupROOTFS_clicked {
 sub install_temp_pkg_system {
 	my ( @packages ) = @_;
 
-	@packages = split(' ',"@packages");
+	@packages = split( ' ', "@packages" );
 
 	my $packages = "@packages";
 	my $command = undef;
@@ -645,7 +619,7 @@ sub install_temp_pkg_chroot {
 	my $dir = shift;
 	my ( @packages ) = @_;
 
-	@packages = split(' ',"@packages");
+	@packages = split( ' ', "@packages" );
 
 	my $packages = "@packages";
 	my $command = undef;
@@ -780,11 +754,11 @@ sub prepare_chroot {
 	this->run_system( "mkdir -p $dir/dev/pts" );
 	this->run_system( "mount -t devpts none $dir/dev/pts" );
 
-	if ( -e "$dir/usr/bin/dbus-uuidgen") {
+	if ( -e "$dir/usr/bin/dbus-uuidgen" ) {
 		this->run_chroot( $dir, "dbus-uuidgen > /var/lib/dbus/machine-id" );
 	}
 
-	my $initfile = this->get_chroot_initfile($dir);
+	my $initfile = this->get_chroot_initfile( $dir );
 
 	this->run_chroot( $dir, "dpkg-divert --local --rename --add $initfile" );
 	this->run_chroot( $dir, "ln -s /bin/true $initfile" );
@@ -799,11 +773,11 @@ sub release_chroot {
 
 	my $command;
 
-	if ( -e "$dir/usr/bin/dbus-uuidgen") {
+	if ( -e "$dir/usr/bin/dbus-uuidgen" ) {
 		unlink "$dir/var/lib/dbus/machine-id";
 	}
 
-	my $initfile = this->get_chroot_initfile($dir);
+	my $initfile = this->get_chroot_initfile( $dir );
 
 	unlink "$dir"."$initfile";
 
@@ -826,7 +800,7 @@ sub get_chroot_initfile {
 	print "$dir\n";
 
 	my $initfile = undef;
-	if ( -e "$dir/sbin/initctl") {
+	if ( -e "$dir/sbin/initctl" ) {
 		# upstart
 		$initfile = "/sbin/initctl";
 	} else {
@@ -878,7 +852,7 @@ sub fix_syslinux_theme_jessie {
 	my $command = undef;
 	this->run_system( "mv $dir/etc/apt/sources.list /tmp/sources.list && echo 'deb http://ftp.debian.org/debian/ wheezy main' | tee $dir/etc/apt/sources.list" );
 
-	this->prepare_chroot($dir);
+	this->prepare_chroot( $dir );
 
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
 	this->run_chroot_terminal( $dir, "apt-get update" );
@@ -890,7 +864,7 @@ sub fix_syslinux_theme_jessie {
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
 	this->run_chroot_terminal( $dir, "apt-get update" );
 
-	this->release_chroot($dir);
+	this->release_chroot( $dir );
 
 	this->run_system( "echo 'syslinux-themes-debian' >> /tmp/temp_pkg_chroot" );
 
@@ -937,11 +911,11 @@ sub run_chroot_terminal {
 
 	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
 
-	this->prepare_chroot($dir);
+	this->prepare_chroot( $dir );
 
 	$exit_code = system 'xterm','-e', "$command || read -p 'Error. Press any key.'";
 
-	this->release_chroot($dir);
+	this->release_chroot( $dir );
 
 	return $exit_code;
 }
