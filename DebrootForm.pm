@@ -152,10 +152,10 @@ sub on_pushButtonUnsquash_clicked {
 
 	this->run_system( "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary" );
 
-	my $command = "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs" );
 
 	this->run_system( "umount $dir-iso" );
+	this->run_system( "rmdir $dir-iso" );
 }
 # [1]
 
@@ -181,11 +181,9 @@ sub on_pushButtonDebootstrap_clicked {
 	# install distro archive keyring
 	this->install_temp_pkg_system("debootstrap $distro-archive-keyring");
 	# start debootstrap with all options
-	my $program = "sudo debootstrap $architecture $variant $additionalopts $release $target $mirror || read -p 'Error. Press any key.'";
-	print "$program\n";
-	Qt::MessageBox::about(this, this->tr('Please wait'),
-                   this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
-	system 'xterm', '-e', $program;
+	#Qt::MessageBox::about(this, this->tr('Please wait'),
+    #               this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
+	this->run_system_terminal( "debootstrap $architecture $variant $additionalopts $release $target $mirror" );
 	# unset rootfs hostname
 	this->run_system( "echo $distro | tee $target/etc/hostname" );
 	# remove installed packages
@@ -239,10 +237,8 @@ sub on_pushButtonWrite_clicked {
 sub on_pushButtonUpdate_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
-	my $program = "chroot $dir apt-get update || read -p 'Error. Press any key.'";
-	this->prepare_chroot($dir);
-	system 'xterm','-e', $program;
-	this->release_chroot($dir);
+
+	this->run_chroot_terminal( $dir, "apt-get update" );
 }
 # [1]
 
@@ -250,10 +246,8 @@ sub on_pushButtonUpdate_clicked {
 sub on_pushButtonUpgrade_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
-	my $program = "sudo chroot $dir su -l -c 'export DEBIAN_FRONTEND=noninteractive && apt-get upgrade || read -p \"Error. Press any key.\"'";
-	this->prepare_chroot($dir);
-	system 'xterm','-e', $program;
-	this->release_chroot($dir);
+
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get upgrade" );
 }
 # [1]
 
@@ -261,10 +255,8 @@ sub on_pushButtonUpgrade_clicked {
 sub on_pushButtonDistUpgrade_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
-	my $program = "sudo chroot $dir su -l -c 'export DEBIAN_FRONTEND=noninteractive && apt-get dist-upgrade --no-install-recommends || read -p \"Error. Press any key.\"'";
-	this->prepare_chroot($dir);
-	system 'xterm','-e', $program;
-	this->release_chroot($dir);
+
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get dist-upgrade --no-install-recommends" );
 }
 # [1]
 
@@ -344,10 +336,7 @@ sub on_pushButtonInstall_clicked {
 
 	my $packages = this->{ui}->{plainTextEditInstall}->toPlainText();
 
-	my $program = "chroot $dir su -l -c 'export DEBIAN_FRONTEND=noninteractive && apt-get install $allowunauthenticated $noinstallrecommends $forceyes $packages || read -p \"Error. Press any key.\"'";
-	this->prepare_chroot($dir);
-	system 'xterm','-e', $program;
-	this->release_chroot($dir);
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get install $allowunauthenticated $noinstallrecommends $forceyes $packages" );
 }
 # [1]
 
@@ -355,10 +344,8 @@ sub on_pushButtonInstall_clicked {
 sub on_pushButtonChrootShell_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
-	my $program = "sudo chroot $dir /bin/bash -c 'export HOME=/root; export LC_ALL=C; exec bash'";
-	this->prepare_chroot($dir);
-	system 'xterm', '-e', $program;
-	this->release_chroot($dir);
+
+	this->run_chroot_terminal( $dir, "export HOME=/root; export LC_ALL=C; exec bash" );
 }
 # [1]
 
@@ -396,13 +383,11 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	this->install_temp_pkg_system("squashfs-tools xorriso");
 
 	unlink "$dir-binary/$livedir/filesystem.squashfs";
-	$command = "mksquashfs $dir $dir-binary/$livedir/filesystem.squashfs || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "mksquashfs $dir $dir-binary/$livedir/filesystem.squashfs" );
 
 	unlink "$dir-binary/md5sum.txt";
 
-	$command = "cd $dir-binary && find -type f ! -path './isolinux/isolinux.bin' ! -path './isolinux/boot.cat' ! -path './isolinux/isohdpfx.bin' ! -path './boot/boot.bin' ! -path './boot/grub/stage2_eltorito' ! -path './*SUMS' ! -path './*sum.txt' -print0 | xargs -0 md5sum | sort -z | tee md5sum.txt || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "cd $dir-binary && find -type f ! -path './isolinux/isolinux.bin' ! -path './isolinux/boot.cat' ! -path './isolinux/isohdpfx.bin' ! -path './boot/boot.bin' ! -path './boot/grub/stage2_eltorito' ! -path './*SUMS' ! -path './*sum.txt' -print0 | xargs -0 md5sum | sort -z | tee md5sum.txt" );
 
 	my $uefi = "0";
 	if ( -e "$dir-binary/boot/grub/efi.img" ) {
@@ -417,8 +402,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	#	$command = "xorriso -as mkisofs -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso $dir-binary || read -p 'Error. Press any key.'";
 	#}
 	unlink "$dir.iso";
-	$command = "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso . || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
 
 	this->remove_temp_pkg_system();
 	this->remove_temp_pkg_chroot($dir);
@@ -578,8 +562,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd" );
 		this->install_temp_pkg_system("lzma");
 		`ls $dir-binary/$livesystem/`;
-		$command = "zcat $dir-binary/$livesystem/initrd | lzma -c > $dir-binary/$livesystem/initrd.lz || read -p 'Error. Press any key.'";
-		system 'xterm', '-e', $command;
+		this->run_system_terminal( "zcat $dir-binary/$livesystem/initrd | lzma -c > $dir-binary/$livesystem/initrd.lz" );
 		this->run_system( "rm $dir-binary/$livesystem/initrd" );
 	}
 
@@ -618,8 +601,7 @@ sub on_pushButtonBackupROOTFS_clicked {
 
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 
-	my $command = "tar -czvf $dir.tar.gz $dir || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "tar -czvf $dir.tar.gz $dir" );
 }
 # [1]
 
@@ -652,8 +634,7 @@ sub install_temp_pkg_system {
 		return 0;
 	}
 
-	$command = "apt-get install $packages --no-install-recommends || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "export DEBIAN_FRONTEND=noninteractive; apt-get install $packages --no-install-recommends" );
 
 	this->run_system( "echo $packages >> /tmp/temp_pkg_system" );
 }
@@ -689,10 +670,7 @@ sub install_temp_pkg_chroot {
 		return 0;
 	}
 
-	$command = "chroot $dir apt-get install $packages --no-install-recommends || read -p 'Error. Press any key.'";
-	this->prepare_chroot($dir);
-	system 'xterm', '-e', $command;
-	this->release_chroot($dir);
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get install $packages --no-install-recommends" );
 
 	this->run_system( "echo $packages >> /tmp/temp_pkg_chroot" );
 }
@@ -721,14 +699,9 @@ sub remove_temp_pkg_system {
 		return 0;
 	}
 
-	$command = "apt-get remove --purge $packages || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
+	this->run_system_terminal( "export DEBIAN_FRONTEND=noninteractive; apt-get remove --purge $packages" );
 
-	$command = "apt-get autoremove --purge -y || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
-
-	#$command = "apt-get clean";
-	#system ( $command );
+	this->run_system_terminal( "export DEBIAN_FRONTEND=noninteractive; apt-get autoremove --purge" );
 
 	unlink "/tmp/temp_pkg_system";
 }
@@ -762,17 +735,9 @@ sub remove_temp_pkg_chroot {
 		return 0;
 	}
 
-	this->prepare_chroot($dir);
-
-	$command = "chroot $dir su -l -c 'export SUDO_FORCE_REMOVE=yes && apt-get remove --purge $packages || read -p \"Error. Press any key.\"'";
-	system 'xterm', '-e', $command;
-
-	$command = "chroot $dir apt-get autoremove --purge -y || read -p 'Error. Press any key.'";
-	system 'xterm', '-e', $command;
-
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; export SUDO_FORCE_REMOVE=yes; apt-get remove --purge $packages" );
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get autoremove --purge -y" );
 	this->run_chroot( $dir, "apt-get clean" );
-
-	this->release_chroot($dir);
 
 	unlink "/tmp/temp_pkg_chroot";
 }
@@ -916,17 +881,14 @@ sub fix_syslinux_theme_jessie {
 	this->prepare_chroot($dir);
 
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
-	$command = "chroot $dir apt-get update || read -p 'Error. Press any key.'";
-	system 'xterm','-e', $command;
+	this->run_chroot_terminal( $dir, "apt-get update" );
 
-	$command = "chroot $dir apt-get install syslinux-themes-debian --no-install-recommends || read -p 'Error. Press any key.'";
-	system 'xterm','-e', $command;
+	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get install syslinux-themes-debian --no-install-recommends" );
 
 	this->run_system( "mv /tmp/sources.list $dir/etc/apt/sources.list" );
 
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
-	$command = "chroot $dir apt-get update || read -p 'Error. Press any key.'";
-	system 'xterm','-e', $command;
+	this->run_chroot_terminal( $dir, "apt-get update" );
 
 	this->release_chroot($dir);
 
@@ -949,9 +911,39 @@ sub run_chroot {
 	my $dir = shift;
 	my ( $command ) = @_;
 
-	system ( "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'" );
+	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
+
+	system ( $command );
 	return $?;
 
+}
+# [1]
+
+# [1]
+sub run_system_terminal {
+	my ( $command ) = @_;
+
+	system 'xterm','-e', "$command || read -p 'Error. Press any key.'";
+	return $?;
+}
+# [1]
+
+# [1]
+sub run_chroot_terminal {
+	my $dir = shift;
+	my ( $command ) = @_;
+
+	my $exit_code = undef;
+
+	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
+
+	this->prepare_chroot($dir);
+
+	$exit_code = system 'xterm','-e', "$command || read -p 'Error. Press any key.'";
+
+	this->release_chroot($dir);
+
+	return $exit_code;
 }
 # [1]
 
