@@ -142,24 +142,20 @@ sub on_pushButtonUnsquash_clicked {
 
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 
-	my $command = "mkdir -p $dir-iso $dir-binary";
-	system( $command );
+	this->run_system( "mkdir -p $dir-iso $dir-binary" );
 
 	my $iso = this->{ui}->{lineEditISOPath}->displayText();
 
-	$command = "mount -o loop $iso $dir-iso";
-	system( $command );
+	this->run_system( "mount -o loop $iso $dir-iso" );
 
 	my $livesystem = this->get_livesystem("$dir-iso");
 
-	$command = "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary";
-	system( $command );
+	this->run_system( "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary" );
 
-	$command = "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs || read -p 'Error. Press any key.'";
+	my $command = "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
-	$command = "umount $dir-iso";
-	system( $command );
+	this->run_system( "umount $dir-iso" );
 }
 # [1]
 
@@ -181,7 +177,6 @@ sub on_pushButtonDebootstrap_clicked {
 	my $mirror = this->{ui}->{lineEditDebootstrapMirror}->displayText();
 	# install ubuntu-archive-keyring or debian-archive-keyring before
 	# debootraping a possible foreign release.
-	my $install_keyring_command = "apt-get install -y --force-yes ";
 	my $distro = this->get_selected_distro();
 	# install distro archive keyring
 	this->install_temp_pkg_system("debootstrap $distro-archive-keyring");
@@ -192,9 +187,7 @@ sub on_pushButtonDebootstrap_clicked {
                    this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
 	system 'xterm', '-e', $program;
 	# unset rootfs hostname
-	$program = "echo $distro | tee $target/etc/hostname";
-	# "sed -i 's|'\$( hostname | sed 's|-|\-|g' )'|$distro|g' $target/etc/hosts"
-	system( $program );
+	this->run_system( "echo $distro | tee $target/etc/hostname" );
 	# remove installed packages
 	this->remove_temp_pkg_system();
 	# make lineEdit change to check if directory exists
@@ -390,14 +383,10 @@ sub on_pushButtonRebuildLiveISO_clicked {
 		# regenerate manifest
 		$command = "chroot $dir dpkg-query -W --showformat=\'\${Package} \${Version}\' > $dir/tmp/filesystem.manifest";
 		system ( $command );
-		$command = "mv $dir/tmp/filesystem.manifest $dir-binary/$livedir/";
-		system( $command );
-		$command = "cp $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.manifest-desktop";
-		system( $command );
-		$command = "sed -i '/ubiquity/d' $dir-binary/$livedir/filesystem.manifest-desktop";
-		system( $command );
-		$command = "sed -i '/casper/d' $dir-binary/$livedir/filesystem.manifest-desktop";
-		system( $command );
+		this->run_system( "mv $dir/tmp/filesystem.manifest $dir-binary/$livedir/" );
+		this->run_system( "cp $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.manifest-desktop" );
+		this->run_system( "sed -i '/ubiquity/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
+		this->run_system( "sed -i '/casper/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
 		# rebuild gfxboot
 		this->rebuild_gfxboot( "$dir-binary/isolinux/" );
 
@@ -457,8 +446,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	}
 
 	## create $dir-binary
-	$command = "mkdir -p $dir-binary/$livesystem $dir-binary/isolinux";
-	system( $command );
+	this->run_system( "mkdir -p $dir-binary/$livesystem $dir-binary/isolinux" );
 
 	## check in rootfs what is the distro for casper or live-boot
 
@@ -491,46 +479,31 @@ sub on_pushButtonBuildLiveISO_clicked {
 	#	cp chroot/boot/memtest86+.bin binary/live/memtest
 	#	cp -n chroot/usr/lib/syslinux/modules/bios/* binary/isolinux/
 	if ( "$distro" eq "debian") {
-		$command = "cp -aL $dir/usr/share/syslinux/themes/debian-wheezy/isolinux-live/* $dir-binary/isolinux/ > /dev/null 2>&1";
-		system( $command );
+		this->run_system( "cp -aL $dir/usr/share/syslinux/themes/debian-wheezy/isolinux-live/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 		if ( "$release" eq "wheezy" ) {
-			$command = "cp $dir/usr/lib/syslinux/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
-			$command = "cp $dir/usr/lib/isolinux/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
+			this->run_system( "cp $dir/usr/lib/syslinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
+			this->run_system( "cp $dir/usr/lib/isolinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 		} else {
-			$command = "cp $dir/usr/lib/SYSLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
-			$command = "cp $dir/usr/lib/ISOLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
-			$command = "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/";
-			system( $command );
+			this->run_system( "cp $dir/usr/lib/SYSLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1" );
+			this->run_system( "cp $dir/usr/lib/ISOLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1" );
+			this->run_system( "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/" );
 		}
 		# remove @LB_BOOTAPPEND_LIVE@ from live.cfg
-		$command = "sed -i 's|\@LB_BOOTAPPEND_LIVE@|splash quiet|' $dir-binary/isolinux/live.cfg";
-		system( $command );
-		$command = "cp $dir/boot/memtest86+.bin $dir-binary/$livesystem/memtest";
-		system( $command );
+		this->run_system( "sed -i 's|\@LB_BOOTAPPEND_LIVE@|splash quiet|' $dir-binary/isolinux/live.cfg" );
+		this->run_system( "cp $dir/boot/memtest86+.bin $dir-binary/$livesystem/memtest" );
 	} else {
-		$command = "tar -xzf $dir/usr/share/gfxboot-theme-ubuntu/bootlogo.tar.gz -C $dir-binary/isolinux/";
-		system( $command );
-		$command = "cp -aL $dir/usr/share/syslinux/themes/$distro-$release/isolinux-live/* $dir-binary/isolinux/";
-		system( $command );
+		this->run_system( "tar -xzf $dir/usr/share/gfxboot-theme-ubuntu/bootlogo.tar.gz -C $dir-binary/isolinux/" );
+		this->run_system( "cp -aL $dir/usr/share/syslinux/themes/$distro-$release/isolinux-live/* $dir-binary/isolinux/" );
 		if ( !("$release" eq "xenial") ) {
-			$command = "cp $dir/usr/lib/syslinux/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
-			$command = "cp $dir/usr/lib/isolinux/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
+			this->run_system( "cp $dir/usr/lib/syslinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
+			this->run_system( "cp $dir/usr/lib/isolinux/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 		} else {
-			$command = "cp $dir/usr/lib/SYSLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
-			$command = "cp $dir/usr/lib/ISOLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1";
-			system( $command );
-			$command = "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/";
-			system( $command );
+			this->run_system( "cp $dir/usr/lib/SYSLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1" );
+			this->run_system( "cp $dir/usr/lib/ISOLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1" );
+			this->run_system( "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/" );
 		}
 		$command = "mkdir -p $dir-binary/install; cp $dir/boot/memtest86+.bin $dir-binary/install/mt86plus";
-		system( $command );
+		this->run_system( $command );
 	}
 
 	this->install_temp_pkg_chroot($dir,"dbus");
@@ -583,7 +556,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	this->install_temp_pkg_chroot($dir, "$live_packages $linux_packages $additional_packages");
 	## run apt-get clean in chroot
 	$command = "chroot $dir apt-get clean";
-	system( $command );
+	system ( $command );
 
 	## copy init files to $dir-binary
 	### if debian
@@ -599,21 +572,16 @@ sub on_pushButtonBuildLiveISO_clicked {
 	#	# remove the old one
 	#	rm binary/casper/initrd.img*
 	if ( "$distro" eq "debian") {
-		$command = "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz";
-		system( $command );
-		$command = "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd.img";
-		system( $command );
+		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz" );
+		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd.img" );
 	} else {
-		$command = "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz";
-		system( $command );
-		$command = "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd";
-		system( $command );
+		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz" );
+		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd" );
 		this->install_temp_pkg_system("lzma");
 		`ls $dir-binary/$livesystem/`;
 		$command = "zcat $dir-binary/$livesystem/initrd | lzma -c > $dir-binary/$livesystem/initrd.lz || read -p 'Error. Press any key.'";
 		system 'xterm', '-e', $command;
-		$command = "rm $dir-binary/$livesystem/initrd";
-		system( $command );
+		this->run_system( "rm $dir-binary/$livesystem/initrd" );
 	}
 
 	## copy isolinux files to $dir-binary/isolinux/
@@ -636,7 +604,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	#	unlink "$dir/etc/resolvconf/resolv.conf.d/head";
 	#	unlink "$dir/etc/resolvconf/resolv.conf.d/original";
 	#	$command = "touch $dir/etc/resolvconf/resolv.conf.d/head; touch $dir/etc/resolvconf/resolv.conf.d/original";
-	#	system( $command );
+	#	system ( $command );
 	#}
 
 	#this->on_pushButtonRebuildISO_clicked();
@@ -670,8 +638,7 @@ sub install_temp_pkg_system {
 	my $result = undef;
 	foreach (@packages) {
 		$package = $_;
-		$command = "dpkg -s $package > /dev/null 2>&1";
-		system ( $command );
+		this->run_system( "dpkg -s $package > /dev/null 2>&1" );
 		$result = $?;
 		print "result: $result\n";
 		if ( $result == 0 ) {
@@ -689,8 +656,7 @@ sub install_temp_pkg_system {
 	$command = "apt-get install $packages --no-install-recommends || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
-	$command = "echo $packages >> /tmp/temp_pkg_system";
-	system( $command );
+	this->run_system( "echo $packages >> /tmp/temp_pkg_system" );
 }
 # [1]
 
@@ -730,8 +696,7 @@ sub install_temp_pkg_chroot {
 	system 'xterm', '-e', $command;
 	this->release_chroot($dir);
 
-	$command = "echo $packages >> /tmp/temp_pkg_chroot";
-	system( $command );
+	this->run_system( "echo $packages >> /tmp/temp_pkg_chroot" );
 }
 # [1]
 
@@ -765,7 +730,7 @@ sub remove_temp_pkg_system {
 	system 'xterm', '-e', $command;
 
 	#$command = "apt-get clean";
-	#system( $command );
+	#system ( $command );
 
 	unlink "/tmp/temp_pkg_system";
 }
@@ -808,7 +773,7 @@ sub remove_temp_pkg_chroot {
 	system 'xterm', '-e', $command;
 
 	$command = "chroot $dir apt-get clean";
-	system( $command );
+	system ( $command );
 
 	this->release_chroot($dir);
 
@@ -844,33 +809,26 @@ sub prepare_chroot {
 
 	my $command;
 
-	$command = "cp /etc/resolv.conf $dir/etc/";
-	system( $command );
-	$command = "cp /etc/hosts $dir/etc/";
-	system( $command );
+	this->run_system( "cp /etc/resolv.conf $dir/etc/" );
+	this->run_system( "cp /etc/hosts $dir/etc/" );
 
-#	$command = "mount -o bind /dev $dir/dev";
-#	system( $command );
-	$command = "mount -t proc none $dir/proc";
-	system( $command );
-	$command = "mount -t sysfs none $dir/sys";
-	system( $command );
-	$command = "mkdir -p $dir/dev/pts";
-	system( $command );
-	$command = "mount -t devpts none $dir/dev/pts";
-	system( $command );
+	#this->run_system( "mount -o bind /dev $dir/dev" );
+	this->run_system( "mount -t proc none $dir/proc" );
+	this->run_system( "mount -t sysfs none $dir/sys" );
+	this->run_system( "mkdir -p $dir/dev/pts" );
+	this->run_system( "mount -t devpts none $dir/dev/pts" );
 
 	if ( -e "$dir/usr/bin/dbus-uuidgen") {
 		$command = "chroot $dir dbus-uuidgen > /var/lib/dbus/machine-id";
-		system( $command);
+		system ( $command);
 	}
 
 	my $initfile = this->get_chroot_initfile($dir);
 
 	$command = "chroot $dir dpkg-divert --local --rename --add $initfile";
-	system( $command );
+	system ( $command );
 	$command = "chroot $dir ln -s /bin/true $initfile";
-	system( $command );
+	system ( $command );
 
 }
 # [1]
@@ -891,16 +849,12 @@ sub release_chroot {
 	unlink "$dir"."$initfile";
 
 	$command = "chroot $dir dpkg-divert --rename --remove $initfile";
-	system( $command );
+	system ( $command );
 
-	$command = "umount -l $dir/dev/pts";
-	system( $command );
-	$command = "umount -l $dir/sys";
-	system( $command );
-	$command = "umount -l $dir/proc";
-	system( $command );
-#	$command = "umount -l $dir/dev";
-#	system( $command );
+	this->run_system( "umount -l $dir/dev/pts" );
+	this->run_system( "umount -l $dir/sys" );
+	this->run_system( "umount -l $dir/proc" );
+	#this->run_system( "umount -l $dir/dev" );
 
 	unlink "$dir/etc/hosts";
 	unlink "$dir/etc/resolv.conf";
@@ -948,16 +902,11 @@ sub rebuild_gfxboot {
 	my $command = undef;
 
 	# from <http://launchpadlibrarian.net/188703593/live-build_3.0~a57-1ubuntu12_3.0~a57-1ubuntu12.1.diff.gz>
-	$command = "rm -rf /tmp/gfxboot; mkdir /tmp/gfxboot";
-	system( $command );
-	$command = "(cd /tmp/gfxboot && cpio -i) < $dir/bootlogo";
-	system( $command );
-	$command = "cp -a -f $dir/*.fnt $dir/*.hlp $dir/*jpg $dir/*.pcx $dir/*.tr $dir/*.cfg /tmp/gfxboot/";
-	system( $command );
-	$command = "(cd /tmp/gfxboot/ && ls -1 | cpio --quiet -o) > $dir/bootlogo";
-	system( $command );
-	$command = "rm -rf /tmp/gfxboot";
-	system( $command );
+	this->run_system( "rm -rf /tmp/gfxboot; mkdir /tmp/gfxboot" );
+	this->run_system( "(cd /tmp/gfxboot && cpio -i) < $dir/bootlogo" );
+	this->run_system( "cp -a -f $dir/*.fnt $dir/*.hlp $dir/*jpg $dir/*.pcx $dir/*.tr $dir/*.cfg /tmp/gfxboot/" );
+	this->run_system( "(cd /tmp/gfxboot/ && ls -1 | cpio --quiet -o) > $dir/bootlogo" );
+	this->run_system( "rm -rf /tmp/gfxboot" );
 }
 # [1]
 
@@ -969,31 +918,46 @@ sub fix_syslinux_theme_jessie {
 	# install it from wheezy to not use -t in apt-get.
 
 	my $command = undef;
-	$command = "mv $dir/etc/apt/sources.list /tmp/sources.list && echo 'deb http://ftp.debian.org/debian/ wheezy main' | tee $dir/etc/apt/sources.list";
-	system( $command );
+	this->run_system( "mv $dir/etc/apt/sources.list /tmp/sources.list && echo 'deb http://ftp.debian.org/debian/ wheezy main' | tee $dir/etc/apt/sources.list" );
 
 	this->prepare_chroot($dir);
 
-	$command = "rm -rf $dir/var/lib/apt/lists/*";
-	system( $command );
+	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
 	$command = "chroot $dir apt-get update || read -p 'Error. Press any key.'";
 	system 'xterm','-e', $command;
 
 	$command = "chroot $dir apt-get install syslinux-themes-debian --no-install-recommends || read -p 'Error. Press any key.'";
 	system 'xterm','-e', $command;
 
-	$command = "mv /tmp/sources.list $dir/etc/apt/sources.list";
-	system( $command );
+	this->run_system( "mv /tmp/sources.list $dir/etc/apt/sources.list" );
 
-	$command = "rm -rf $dir/var/lib/apt/lists/*";
-	system( $command );
+	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
 	$command = "chroot $dir apt-get update || read -p 'Error. Press any key.'";
 	system 'xterm','-e', $command;
 
 	this->release_chroot($dir);
 
-	$command = "echo 'syslinux-themes-debian' >> /tmp/temp_pkg_chroot";
-	system( $command );
+	this->run_system( "echo 'syslinux-themes-debian' >> /tmp/temp_pkg_chroot" );
+
+}
+# [1]
+
+# [1]
+sub run_system {
+	my ( $command ) = @_;
+
+	system ( $command );
+
+	return $?;
+}
+# [1]
+
+# [1]
+sub run_chroot {
+	my $dir = shift;
+	my ( $command ) = @_;
+
+	return $?;
 
 }
 # [1]
