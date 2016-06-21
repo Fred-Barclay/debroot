@@ -381,8 +381,9 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	if ( "$livedir" eq "casper") {
 		# regenerate manifest
-		$command = "chroot $dir dpkg-query -W --showformat=\'\${Package} \${Version}\' > $dir/tmp/filesystem.manifest";
-		system ( $command );
+		$command = "chroot $dir dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest";
+		system ( $command );	# cant use run_chroot() because of quotes?
+		#this->run_chroot ( $dir, "dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest" );
 		this->run_system( "mv $dir/tmp/filesystem.manifest $dir-binary/$livedir/" );
 		this->run_system( "cp $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.manifest-desktop" );
 		this->run_system( "sed -i '/ubiquity/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
@@ -502,8 +503,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 			this->run_system( "cp $dir/usr/lib/ISOLINUX/* $dir-binary/isolinux/ > /dev/null 2>&1" );
 			this->run_system( "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/" );
 		}
-		$command = "mkdir -p $dir-binary/install; cp $dir/boot/memtest86+.bin $dir-binary/install/mt86plus";
-		this->run_system( $command );
+		this->run_system( "mkdir -p $dir-binary/install; cp $dir/boot/memtest86+.bin $dir-binary/install/mt86plus" );
 	}
 
 	this->install_temp_pkg_chroot($dir,"dbus");
@@ -555,8 +555,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	# install packages in chroot
 	this->install_temp_pkg_chroot($dir, "$live_packages $linux_packages $additional_packages");
 	## run apt-get clean in chroot
-	$command = "chroot $dir apt-get clean";
-	system ( $command );
+	this->run_chroot( $dir, "apt-get clean" );
 
 	## copy init files to $dir-binary
 	### if debian
@@ -675,8 +674,7 @@ sub install_temp_pkg_chroot {
 	my $result = undef;
 	foreach (@packages) {
 		$package = $_;
-		$command = "chroot $dir dpkg -s $package > /dev/null 2>&1";
-		system ( $command );
+		this->run_chroot( $dir, "dpkg -s $package > /dev/null 2>&1" );
 		$result = $?;
 		print "result: $result\n";
 		if ( $result == 0 ) {
@@ -772,8 +770,7 @@ sub remove_temp_pkg_chroot {
 	$command = "chroot $dir apt-get autoremove --purge -y || read -p 'Error. Press any key.'";
 	system 'xterm', '-e', $command;
 
-	$command = "chroot $dir apt-get clean";
-	system ( $command );
+	this->run_chroot( $dir, "apt-get clean" );
 
 	this->release_chroot($dir);
 
@@ -819,16 +816,13 @@ sub prepare_chroot {
 	this->run_system( "mount -t devpts none $dir/dev/pts" );
 
 	if ( -e "$dir/usr/bin/dbus-uuidgen") {
-		$command = "chroot $dir dbus-uuidgen > /var/lib/dbus/machine-id";
-		system ( $command);
+		this->run_chroot( $dir, "dbus-uuidgen > /var/lib/dbus/machine-id" );
 	}
 
 	my $initfile = this->get_chroot_initfile($dir);
 
-	$command = "chroot $dir dpkg-divert --local --rename --add $initfile";
-	system ( $command );
-	$command = "chroot $dir ln -s /bin/true $initfile";
-	system ( $command );
+	this->run_chroot( $dir, "dpkg-divert --local --rename --add $initfile" );
+	this->run_chroot( $dir, "ln -s /bin/true $initfile" );
 
 }
 # [1]
@@ -848,8 +842,7 @@ sub release_chroot {
 
 	unlink "$dir"."$initfile";
 
-	$command = "chroot $dir dpkg-divert --rename --remove $initfile";
-	system ( $command );
+	this->run_chroot( $dir, "dpkg-divert --rename --remove $initfile" );
 
 	this->run_system( "umount -l $dir/dev/pts" );
 	this->run_system( "umount -l $dir/sys" );
@@ -947,7 +940,6 @@ sub run_system {
 	my ( $command ) = @_;
 
 	system ( $command );
-
 	return $?;
 }
 # [1]
@@ -957,6 +949,7 @@ sub run_chroot {
 	my $dir = shift;
 	my ( $command ) = @_;
 
+	system ( "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'" );
 	return $?;
 
 }
