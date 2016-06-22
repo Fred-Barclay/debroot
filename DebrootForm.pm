@@ -185,7 +185,7 @@ sub on_pushButtonDebootstrap_clicked {
     #               this->tr('Please wait a moment... After the procedure is done you will return to debroot.'));
 	this->run_system_terminal( "debootstrap $architecture $variant $additionalopts $release $target $mirror" );
 	# unset rootfs hostname
-	this->run_system( "echo $distro | tee $target/etc/hostname" );
+	this->run_system( "echo $distro > $target/etc/hostname" );
 	# remove installed packages
 	this->remove_temp_pkg_system();
 	# make lineEdit change to check if directory exists
@@ -859,7 +859,7 @@ sub fix_syslinux_theme_jessie {
 	my $command = undef;
 	this->run_system( "mv $dir/etc/apt/sources.list /tmp/sources.list && echo 'deb http://ftp.debian.org/debian/ wheezy main' | tee $dir/etc/apt/sources.list" );
 
-	this->prepare_chroot( $dir );
+	#this->prepare_chroot( $dir );
 
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
 	this->run_chroot_terminal( $dir, "apt-get update" );
@@ -871,7 +871,7 @@ sub fix_syslinux_theme_jessie {
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
 	this->run_chroot_terminal( $dir, "apt-get update" );
 
-	this->release_chroot( $dir );
+	#this->release_chroot( $dir );
 
 	this->run_system( "echo 'syslinux-themes-debian' >> /tmp/temp_pkg_chroot" );
 
@@ -897,7 +897,7 @@ sub run_chroot {
 
 	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
 
-	system( "echo '$command' >> $dir-builds-script.sh" );
+	system( "echo $command >> $dir-builds-script.sh" );
 
 	system ( "$command" );
 	return $?;
@@ -928,7 +928,7 @@ sub run_chroot_terminal {
 
 	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
 
-	system( "echo '$command' >> $dir-builds-script.sh" );
+	system( "echo $command >> $dir-builds-script.sh" );
 
 	$command = "$command || read -p 'Error. Press any key.'";
 
