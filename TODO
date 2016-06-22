@@ -1,16 +1,17 @@
 # TODO/FIXME
 #
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
+# IMPROV: GUI: enable "--no-install-recommends" by default; user unchek if wanted.
 # FIXME: GUI: rename "Write" to "Save".
 # FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare iso" and swap buttons. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
 # IMPROV: copyright/license.
 # IMPROV: debian packaging.
 # IMPROV: GUI: add a "Browse chroot" button in "Build" tab and run "xdg-open $dir" to browse/change files in $dir. Only available if $dir exists.
 # IMPROV: GUI: add a "Browse binary" button in "Build" tab and run "xdg-open $dir-binary" to browse/change files in $dir-binary. Only available if $dir-binary exists.
+# IMPROV: GUI: add a "preseed file" button in "Install" tab to load a preseed file to be used when installing the packages.
 # IMPROV: GUI: set default debian release to "jessie" and default ubuntu release to "xenial".
 # IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
 # IMPROV: GUI: in install tab add a button to choose a script/hook to do automated stuff.
-# IMPROV: GUI: enable "--no-install-recommends" by default; user unchek if wanted.
 # IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
 # IMPROV: GUI: add a port text input for "Chroot RDP".
 # FIXME: only happens with sudo; does not with gksudo:
@@ -21,9 +22,9 @@
 # IMPROV: upgrade livecd button: unsquash; remove casper from chroot to update initramfs; run dist-upgrade to update kernel; update vmlinuz and initrd.lz; reinstall casper in chroot.
 # IMPROV: build a livecd with this program to create livecd of installed systems to another disk, like clonezilla/systemrescuecd/gparted.
 # FIXME: see <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>. It happens if one doesnt install network-manager in live image.
+# FIXME: xterm (no copy/paste?)
 #
 #
 # DEPENDS (replace with temp_pkg_system installs)
 #
-# xterm (no copy/paste?)
 # rsync
