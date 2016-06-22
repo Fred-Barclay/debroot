@@ -370,6 +370,9 @@ sub on_pushButtonRebuildLiveISO_clicked {
 		# regenerate manifest
 		$command = "chroot $dir dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest";
 		system ( $command );	# cant use run_chroot() because of quotes?
+		# append to build script manally
+		system( "echo $command >> $dir-builds-script.sh" );
+
 		#this->run_chroot ( $dir, "dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest" );
 		this->run_system( "mv $dir/tmp/filesystem.manifest $dir-binary/$livedir/" );
 		this->run_system( "cp $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.manifest-desktop" );
@@ -474,7 +477,11 @@ sub on_pushButtonBuildLiveISO_clicked {
 			this->run_system( "cp $dir/usr/lib/syslinux/modules/bios/* $dir-binary/isolinux/" );
 		}
 		# remove @LB_BOOTAPPEND_LIVE@ from live.cfg
-		this->run_system( "sed -i 's|\@LB_BOOTAPPEND_LIVE@|splash quiet|' $dir-binary/isolinux/live.cfg" );
+		my $command = "sed -i 's|\@LB_BOOTAPPEND_LIVE@|splash quiet|' $dir-binary/isolinux/live.cfg";
+		system( "$command" );
+		# append to build script manally
+		system( "echo '$command' >> $dir-builds-script.sh" );
+
 		this->run_system( "cp $dir/boot/memtest86+.bin $dir-binary/$livesystem/memtest" );
 	} else {
 		this->run_system( "tar -xzf $dir/usr/share/gfxboot-theme-ubuntu/bootlogo.tar.gz -C $dir-binary/isolinux/" );
@@ -875,7 +882,10 @@ sub fix_syslinux_theme_jessie {
 sub run_system {
 	my ( $command ) = @_;
 
-	system ( $command );
+	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
+	system( "echo '$command' >> $dir-builds-script.sh" );
+
+	system ( "$command" );
 	return $?;
 }
 # [1]
@@ -887,7 +897,9 @@ sub run_chroot {
 
 	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
 
-	system ( $command );
+	system( "echo '$command' >> $dir-builds-script.sh" );
+
+	system ( "$command" );
 	return $?;
 
 }
@@ -897,7 +909,12 @@ sub run_chroot {
 sub run_system_terminal {
 	my ( $command ) = @_;
 
-	system 'xterm','-e', "$command || read -p 'Error. Press any key.'";
+	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
+	system( "echo '$command' >> $dir-builds-script.sh" );
+
+	$command = "$command || read -p 'Error. Press any key.'";
+
+	system 'xterm', '-e', "$command";
 	return $?;
 }
 # [1]
@@ -911,9 +928,13 @@ sub run_chroot_terminal {
 
 	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
 
+	system( "echo '$command' >> $dir-builds-script.sh" );
+
+	$command = "$command || read -p 'Error. Press any key.'";
+
 	this->prepare_chroot( $dir );
 
-	$exit_code = system 'xterm','-e', "$command || read -p 'Error. Press any key.'";
+	$exit_code = system 'xterm','-e', "$command";
 
 	this->release_chroot( $dir );
 

@@ -1,6 +1,7 @@
 # TODO/FIXME
 #
-# IMPROV: create functions to read and to write to files and use them in "Read" and "Write" buttons.
+# IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
+# FIXME: GUI: rename "Write" to "Save".
 # FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare iso" and swap buttons. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
 # IMPROV: copyright/license.
 # IMPROV: debian packaging.
@@ -15,7 +16,6 @@
 # FIXME: only happens with sudo; does not with gksudo:
 #Object::connect: No such signal QLineEdit::textChanged()
 #Object::connect:  (sender name:   'lineEditISOPath')
-# IMPROV: create append_build_script function and append all commands to that file. In chroot functions set full $command before executing to append to build script.
 # IMPROV: build USB img.
 # IMPROV: support UEFI.
 # IMPROV: upgrade livecd button: unsquash; remove casper from chroot to update initramfs; run dist-upgrade to update kernel; update vmlinuz and initrd.lz; reinstall casper in chroot.
