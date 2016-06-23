@@ -1,5 +1,7 @@
 # README
 
+![alt tag](https://raw.githubusercontent.com/rbern/debroot/master/debroot.png)
+
 This app started while exploring perl and QT. It started as an app that could create and run chroots. When this was reached, the potentialities of perl QT made me want go further and from the chroot I wanted to make a Live iso image. As the doors where opening I added support for Ubuntu and Debian and made the app create a bash script (instead of keeping build logs) that can rebuild the whole process without the use of this app.
 
 ATM the app does the following:
