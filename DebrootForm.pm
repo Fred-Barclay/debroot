@@ -150,6 +150,7 @@ sub on_pushButtonUnsquash_clicked {
 
 	my $livesystem = this->get_livesystem( "$dir-iso" );
 
+	this->install_temp_pkg_system( "rsync" );
 	this->run_system( "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary" );
 
 	this->run_system_terminal( "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs" );

@@ -23,8 +23,3 @@
 # IMPROV: build a livecd with this program to create livecd of installed systems to another disk, like clonezilla/systemrescuecd/gparted.
 # FIXME: see <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>. It happens if one doesnt install network-manager in live image.
 # FIXME: xterm (no copy/paste?)
-#
-#
-# DEPENDS (replace with temp_pkg_system installs)
-#
-# rsync
