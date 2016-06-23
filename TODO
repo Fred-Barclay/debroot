@@ -3,7 +3,7 @@
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
 # IMPROV: GUI: enable "--no-install-recommends" by default; user unchek if wanted.
 # FIXME: GUI: rename "Write" to "Save".
-# FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare iso" and swap buttons. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
+# FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare/update iso content" and swap buttons positions. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
 # IMPROV: copyright/license.
 # IMPROV: debian packaging.
 # IMPROV: GUI: add a "Browse chroot" button in "Build" tab and run "xdg-open $dir" to browse/change files in $dir. Only available if $dir exists.
