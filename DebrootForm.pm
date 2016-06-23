@@ -406,7 +406,13 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	#	$command = "xorriso -as mkisofs -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso $dir-binary || read -p 'Error. Press any key.'";
 	#}
 	unlink "$dir.iso";
-	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
+	# if there is a isolinux/isohdpfx.bin file, build an iso-hybrid iso.
+	my $hybrid_options = "";
+	if ( -e "$dir-binary/isolinux/isohdpfx.bin" ) {
+		$hybrid_options = "-isohybrid-mbr isolinux/isohdpfx.bin";
+	}
+
+	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs $hybrid_options -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
 
 	this->remove_temp_pkg_system();
 	this->remove_temp_pkg_chroot( $dir );
