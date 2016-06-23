@@ -365,6 +365,23 @@ sub on_pushButtonRebuildLiveISO_clicked {
 
 	my $livedir = this->get_livesystem( $binarydir );
 
+	## run apt-get clean in chroot
+	this->run_chroot( $dir, "apt-get clean" );
+
+	if ( "$livedir" eq "casper") {
+		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/vmlinuz" );
+		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/initrd.img" );
+	} else {
+		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/vmlinuz" );
+		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/initrd" );
+		this->install_temp_pkg_system( "lzma" );
+		`ls $dir-binary/$livedir/`;
+		this->run_system_terminal( "zcat $dir-binary/$livedir/initrd | lzma -c > $dir-binary/$livedir/initrd.lz" );
+		this->run_system( "rm $dir-binary/$livedir/initrd" );
+	}
+
+	this->remove_temp_pkg_system();
+
 	print "livedir: $livedir\n";
 
 	if ( "$livedir" eq "casper" ) {
@@ -554,20 +571,6 @@ sub on_pushButtonBuildLiveISO_clicked {
 	this->install_temp_pkg_chroot( $dir, "$live_packages $linux_packages $additional_packages" );
 	## run apt-get clean in chroot
 	this->run_chroot( $dir, "apt-get clean" );
-
-	if ( "$distro" eq "debian" ) {
-		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz" );
-		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd.img" );
-	} else {
-		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livesystem/vmlinuz" );
-		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livesystem/initrd" );
-		this->install_temp_pkg_system( "lzma" );
-		`ls $dir-binary/$livesystem/`;
-		this->run_system_terminal( "zcat $dir-binary/$livesystem/initrd | lzma -c > $dir-binary/$livesystem/initrd.lz" );
-		this->run_system( "rm $dir-binary/$livesystem/initrd" );
-	}
-
-	this->remove_temp_pkg_system();
 
 	# In ubuntu resolvconf keeps debootstrap resolv.conf. Unset it.
 	# See <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>
