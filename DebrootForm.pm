@@ -938,11 +938,11 @@ sub run_chroot_terminal {
 
 	$command = "chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; $command'";
 
+	this->prepare_chroot( $dir );
+
 	system( "echo $command >> $dir-builds-script.sh" );
 
 	$command = "$command || read -p 'Error. Press any key.'";
-
-	this->prepare_chroot( $dir );
 
 	$exit_code = system 'xterm','-e', "$command";
 
