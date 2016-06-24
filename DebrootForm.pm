@@ -368,7 +368,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	## run apt-get clean in chroot
 	this->run_chroot( $dir, "apt-get clean" );
 
-	if ( "$livedir" eq "casper") {
+	if ( "$livedir" eq "live") {
 		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/vmlinuz" );
 		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/initrd.img" );
 	} else {
