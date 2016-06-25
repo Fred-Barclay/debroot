@@ -570,7 +570,10 @@ sub on_pushButtonBuildLiveISO_clicked {
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
 			$linux_packages = "linux-image-generic";
 		}
-		$additional_packages = $additional_packages . " plymouth-theme-ubuntu-text";
+		if ( !( -e "$dir/usr/share/doc/plymouth-theme-ubuntu-*" ) ) {
+			# install at least one plymouth theme, needed for integrity check
+			$additional_packages = $additional_packages . " plymouth-theme-ubuntu-text";
+		}
 	} else {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
 		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
