@@ -368,18 +368,50 @@ sub on_pushButtonRebuildLiveISO_clicked {
 	## run apt-get clean in chroot
 	this->run_chroot( $dir, "apt-get clean" );
 
-	if ( "$livedir" eq "live") {
-		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/vmlinuz" );
-		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/initrd.img" );
-	} else {
-		this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/vmlinuz" );
-		this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/initrd" );
-		this->install_temp_pkg_system( "lzma" );
-		`ls $dir-binary/$livedir/`;
-		this->run_system_terminal( "zcat $dir-binary/$livedir/initrd | lzma -c > $dir-binary/$livedir/initrd.lz" );
-		this->run_system( "rm $dir-binary/$livedir/initrd" );
+	## reinstall (update) vmlinuz and initrd in live binary
+	if ( ! -e "$dir/boot/initrd-*" ) {
+		# regenerate new kernel boot files
+		this->run_chroot_terminal( $dir, "dpkg-reconfigure initramfs-tools" );
 	}
+	if ( ! -e "$dir/boot/vminuz-*" ) {
+		# reinstall kernel
+		my $kernel = `ls $dir/vmlinuz -la | cut -d'>' -f 2`;
+		$kernel =~ s/ boot\/vmlinuz-//;
+		$kernel =~ s/\n/ /g;
+		if ( "$livedir" eq "casper" ) {
+			$kernel = "linux-image-" . $kernel . "linux-signed-image-" . $kernel;
+		} else {
+			$kernel = "linux-image-" . $kernel;
+		}
+		this->run_chroot_terminal( $dir, "apt-get install --reinstall $kernel" );
+		## run apt-get clean in chroot
+		this->run_chroot( $dir, "apt-get clean" );
+	}
+	this->run_system( " rm -f $dir-binary/$livedir/vmlinuz.efi $dir-binary/$livedir/vmlinuz $dir-binary/$livedir/initrd.img $dir-binary/$livedir/initrd.lz" );
+	# only select the latest kernel available because after
+	# a dist-upgrade the previous kernel may still be present.
+	this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/" );
+	my $latest_vmlinuz_img = `cd $dir-binary/$livedir/ && ls -1 vmlinuz-* | grep -v efi | tail -n 1`;
+	my $latest_vmlinuz_efi = `cd $dir-binary/$livedir/ && ls -1 vmlinuz-*.efi.* | tail -n 1`;
+	$latest_vmlinuz_img =~ s/\n/ /g;
+	$latest_vmlinuz_efi =~ s/\n/ /g;
+	this->run_system_terminal( "cp $dir-binary/$livedir/$latest_vmlinuz_img $dir-binary/$livedir/vmlinuz" );
+	if ( ! "$latest_vmlinuz_efi" eq "" ) {
+		this->run_system( "cp $dir-binary/$livedir/$latest_vmlinuz_efi $dir-binary/$livedir/vmlinuz.efi" );
+	}
+	this->run_system( "rm $dir-binary/$livedir/vmlinuz-*" );
 
+	this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/" );
+	my $latest_initrd_img = `cd $dir-binary/$livedir/ && ls -1 initrd.img* | grep -v efi | tail -n 1`;
+	$latest_initrd_img =~ s/\n/ /g;
+	if ( "$livedir" eq "casper" ) {
+		# in ubuntu
+		this->install_temp_pkg_system( "lzma" );
+		this->run_system_terminal( "zcat $dir-binary/$livedir/$latest_initrd_img | lzma -c > $dir-binary/$livedir/initrd.lz" );
+	} else {
+		this->run_system( "cp $dir/boot/$latest_initrd_img $dir-binary/$livedir/initrd.img" );
+	}
+	this->run_system( "rm $dir-binary/$livedir/initrd.img-*" );
 	this->remove_temp_pkg_system();
 
 	print "livedir: $livedir\n";
