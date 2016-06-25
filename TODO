@@ -1,5 +1,6 @@
 # TODO/FIXME
 #
+# FIXME: BUG: the dpkg query call to generate manifest is not working.
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
 # IMPROV: GUI: enable "--no-install-recommends" by default; user unchek if wanted.
 # FIXME: GUI: rename "Write" to "Save".
