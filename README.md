@@ -2,7 +2,7 @@
 
 ![alt tag](https://raw.githubusercontent.com/rbern/debroot/master/debroot.png)
 
-This app started while exploring perl and QT. It started as an app that could create and run chroots. When this was reached, the potentialities of perl QT made me want go further and from the chroot I wanted to make a Live iso image. As the doors where opening I added support for Ubuntu and Debian and made the app create a bash script (instead of keeping build logs) that can rebuild the whole process without the use of this app.
+This app started while exploring perl and QT. It started as an app that could create and run chroots. When this was reached, the potentialities of perl QT made me want go further and from the chroot I wanted to make a Live iso image and usb images. As the doors were opening I added support for Ubuntu and Debian and made the app create a bash script (instead of keeping build logs) that can rebuild the whole process without the use of this app.
 
 ATM the app does the following:
 
@@ -13,16 +13,13 @@ ATM the app does the following:
 
 # Bugs
 
-Still many. See TODO file.
+See TODO file.
 
-* If you started from a debootstrap rootfs, in the "Build" tab clik "Build Live ISO" and then "Rebuild Live ISO" to actually create the iso;
-* If you started from a debian/ubuntu Live iso, in the "Build" tab then only click "Rebuild Live ISO" to create the iso;
 * To enable "Unsquash" button you may have to type and remove text in the "ROOTFS Directory" text input;
 * some buttons are disabled because they are not implemeted yet.
 
 # ROADMAP
 
-* rearrange GUI interface;
 * debian packaging;
 * build non-live USB image;
 * add a custom script based installer to "replace" both ubiquity or debian-installer;

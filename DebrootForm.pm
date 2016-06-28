@@ -20,7 +20,7 @@ use QtCore4::slots
 	on_pushButtonUnsquash_clicked => [],
 	on_pushButtonDebootstrap_clicked => [],
 	on_pushButtonRead_clicked => [],
-	on_pushButtonWrite_clicked => [],
+	on_pushButtonSave_clicked => [],
 	on_pushButtonSourcesHelp_clicked => [],
 	on_pushButtonUpdate_clicked => [],
 	on_pushButtonUpgrade_clicked => [],
@@ -29,7 +29,7 @@ use QtCore4::slots
 	disableInstallButton => [],
 	on_pushButtonInstall_clicked => [],
 	on_pushButtonChrootShell_clicked => [],
-	on_pushButtonRebuildLiveISO_clicked => [],
+	on_pushButtonPrepareLiveISO_clicked => [],
 	on_pushButtonBuildLiveISO_clicked => [],
 	on_pushButtonBackupROOTFS_clicked=> [];
 # [1]
@@ -75,6 +75,7 @@ sub on_radioButtonDebian_toggled {
 		foreach $release (@releases) {
 			this->{ui}->{comboBoxRelease}->addItem( $release );
 		}
+		this->{ui}->{comboBoxRelease}->setCurrentIndex(this->{ui}->{comboBoxRelease}->findText("stretch"));
 	}
 }
 # [1]
@@ -90,6 +91,7 @@ sub on_radioButtonUbuntu_toggled {
 		foreach $release (@releases) {
 			this->{ui}->{comboBoxRelease}->addItem( $release );
 		}
+		this->{ui}->{comboBoxRelease}->setCurrentIndex(this->{ui}->{comboBoxRelease}->findText("xenial"));
 	}
 }
 # [1]
@@ -122,7 +124,7 @@ sub on_pushButtonSelectISO_clicked {
 	my $file = Qt::FileDialog::getOpenFileName( this, "Select ISO files", "/media/", "iso files (*.iso)" );
 	this->{ui}->{lineEditISOPath}->setText( $file );
 	# enable rebuild live iso button
-	this->{ui}->{pushButtonRebuildLiveISO}->setEnabled(1);
+	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
 	# disabble build live iso button
 	#this->{ui}->{pushButtonBuildLiveISO}->setEnabled(0);
 
@@ -217,7 +219,7 @@ sub on_pushButtonRead_clicked {
 # [1]
 
 # [1]
-sub on_pushButtonWrite_clicked {
+sub on_pushButtonSave_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 	my $sourcesfile = "$dir"."/etc/apt/sources.list";
@@ -351,7 +353,7 @@ sub on_pushButtonChrootShell_clicked {
 # [1]
 
 # [1]
-sub on_pushButtonRebuildLiveISO_clicked {
+sub on_pushButtonBuildLiveISO_clicked {
 	my ( $value ) = @_;
 
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
@@ -470,7 +472,7 @@ sub on_pushButtonRebuildLiveISO_clicked {
 # [1]
 
 # [1]
-sub on_pushButtonBuildLiveISO_clicked {
+sub on_pushButtonPrepareLiveISO_clicked {
 	my ( $value ) = @_;
 
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
@@ -616,8 +618,8 @@ sub on_pushButtonBuildLiveISO_clicked {
 	#	system ( $command );
 	#}
 
-	#this->on_pushButtonRebuildISO_clicked();
-	#QMetaObject::invokeMethod( this->{ui}->{pushButtonRebuildISO}, "clicked" );
+	#this->on_pushButtonPrepareLiveISO_clicked();
+	#QMetaObject::invokeMethod( this->{ui}->{pushButtonPrepareLiveISO}, "clicked" );
 }
 # [1]
 

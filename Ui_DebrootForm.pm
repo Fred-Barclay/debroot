@@ -1,11 +1,11 @@
 ###############################################################################
-#
+# 
 ###############################################################################
 
 #################################################################################
 ## Form generated from reading UI file 'debrootform.ui'
 ##
-## Created: sex Jun 17 03:19:31 2016
+## Created: ter Jun 28 14:03:12 2016
 ##      by: Qt User Interface Compiler version 4.8.6
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -110,8 +110,8 @@ sub pushButtonRead {
     return shift->{pushButtonRead};
 }
 
-sub pushButtonWrite {
-    return shift->{pushButtonWrite};
+sub pushButtonSave {
+    return shift->{pushButtonSave};
 }
 
 sub pushButtonSourcesHelp {
@@ -128,6 +128,14 @@ sub pushButtonUpgrade {
 
 sub pushButtonDistUpgrade {
     return shift->{pushButtonDistUpgrade};
+}
+
+sub label_7 {
+    return shift->{label_7};
+}
+
+sub label_8 {
+    return shift->{label_8};
 }
 
 sub tab_3 {
@@ -158,6 +166,18 @@ sub checkBoxForceYes {
     return shift->{checkBoxForceYes};
 }
 
+sub pushButtonInstallSelectPreseedFile {
+    return shift->{pushButtonInstallSelectPreseedFile};
+}
+
+sub lineEditInstallPreseedFile {
+    return shift->{lineEditInstallPreseedFile};
+}
+
+sub label_6 {
+    return shift->{label_6};
+}
+
 sub tab_4 {
     return shift->{tab_4};
 }
@@ -174,14 +194,6 @@ sub tab_5 {
     return shift->{tab_5};
 }
 
-sub pushButtonBuildLiveISO {
-    return shift->{pushButtonBuildLiveISO};
-}
-
-sub pushButtonBuildUSBIMG {
-    return shift->{pushButtonBuildUSBIMG};
-}
-
 sub checkBoxUEFI {
     return shift->{checkBoxUEFI};
 }
@@ -190,12 +202,40 @@ sub checkBoxCustomInstaller {
     return shift->{checkBoxCustomInstaller};
 }
 
-sub pushButtonBackupROOTFS {
-    return shift->{pushButtonBackupROOTFS};
+sub groupBox_4 {
+    return shift->{groupBox_4};
 }
 
-sub pushButtonRebuildLiveISO {
-    return shift->{pushButtonRebuildLiveISO};
+sub pushButtonPrepareLiveISO {
+    return shift->{pushButtonPrepareLiveISO};
+}
+
+sub pushButtonBuildLiveISO {
+    return shift->{pushButtonBuildLiveISO};
+}
+
+sub groupBox_5 {
+    return shift->{groupBox_5};
+}
+
+sub pushButtonBuildUSBIMG {
+    return shift->{pushButtonBuildUSBIMG};
+}
+
+sub lineEditBuildUSBUsername {
+    return shift->{lineEditBuildUSBUsername};
+}
+
+sub label_5 {
+    return shift->{label_5};
+}
+
+sub groupBox_6 {
+    return shift->{groupBox_6};
+}
+
+sub pushButtonBackupROOTFS {
+    return shift->{pushButtonBackupROOTFS};
 }
 
 sub label {
@@ -306,11 +346,11 @@ sub setupUi {
     my $pushButtonRead = Qt::PushButton( $tab_2 );
     $self->{pushButtonRead} = $pushButtonRead;
     $pushButtonRead->setObjectName( "pushButtonRead" );
-    $pushButtonRead->setGeometry( Qt::Rect(10, 130, 61, 27) );
-    my $pushButtonWrite = Qt::PushButton( $tab_2 );
-    $self->{pushButtonWrite} = $pushButtonWrite;
-    $pushButtonWrite->setObjectName( "pushButtonWrite" );
-    $pushButtonWrite->setGeometry( Qt::Rect(80, 130, 71, 27) );
+    $pushButtonRead->setGeometry( Qt::Rect(10, 160, 61, 27) );
+    my $pushButtonSave = Qt::PushButton( $tab_2 );
+    $self->{pushButtonSave} = $pushButtonSave;
+    $pushButtonSave->setObjectName( "pushButtonSave" );
+    $pushButtonSave->setGeometry( Qt::Rect(80, 160, 71, 27) );
     my $pushButtonSourcesHelp = Qt::PushButton( $tab_2 );
     $self->{pushButtonSourcesHelp} = $pushButtonSourcesHelp;
     $pushButtonSourcesHelp->setObjectName( "pushButtonSourcesHelp" );
@@ -318,7 +358,7 @@ sub setupUi {
     my $pushButtonUpdate = Qt::PushButton( $tab_2 );
     $self->{pushButtonUpdate} = $pushButtonUpdate;
     $pushButtonUpdate->setObjectName( "pushButtonUpdate" );
-    $pushButtonUpdate->setGeometry( Qt::Rect(10, 160, 111, 27) );
+    $pushButtonUpdate->setGeometry( Qt::Rect(190, 160, 111, 27) );
     my $pushButtonUpgrade = Qt::PushButton( $tab_2 );
     $self->{pushButtonUpgrade} = $pushButtonUpgrade;
     $pushButtonUpgrade->setObjectName( "pushButtonUpgrade" );
@@ -327,6 +367,19 @@ sub setupUi {
     $self->{pushButtonDistUpgrade} = $pushButtonDistUpgrade;
     $pushButtonDistUpgrade->setObjectName( "pushButtonDistUpgrade" );
     $pushButtonDistUpgrade->setGeometry( Qt::Rect(410, 160, 111, 27) );
+    my $label_7 = Qt::Label( $tab_2 );
+    $self->{label_7} = $label_7;
+    $label_7->setObjectName( "label_7" );
+    $label_7->setGeometry( Qt::Rect(10, 140, 101, 16) );
+    my $font = Qt::Font();
+    $font->setBold( 1 );
+    $font->setWeight( 75 );
+    $label_7->setFont( $font );
+    my $label_8 = Qt::Label( $tab_2 );
+    $self->{label_8} = $label_8;
+    $label_8->setObjectName( "label_8" );
+    $label_8->setGeometry( Qt::Rect(190, 140, 59, 15) );
+    $label_8->setFont( $font );
     $tabWidget->addTab( $tab_2, Qt::Application::translate( 'DebrootForm', "sources.list/upgrade", undef, Qt::Application::UnicodeUTF8() ) );
     my $tab_3 = Qt::Widget(  );
     $self->{tab_3} = $tab_3;
@@ -334,27 +387,42 @@ sub setupUi {
     my $plainTextEditInstall = Qt::PlainTextEdit( $tab_3 );
     $self->{plainTextEditInstall} = $plainTextEditInstall;
     $plainTextEditInstall->setObjectName( "plainTextEditInstall" );
-    $plainTextEditInstall->setGeometry( Qt::Rect(10, 10, 511, 111) );
+    $plainTextEditInstall->setGeometry( Qt::Rect(10, 30, 511, 91) );
     my $pushButtonInstallHelp = Qt::PushButton( $tab_3 );
     $self->{pushButtonInstallHelp} = $pushButtonInstallHelp;
     $pushButtonInstallHelp->setObjectName( "pushButtonInstallHelp" );
-    $pushButtonInstallHelp->setGeometry( Qt::Rect(10, 120, 92, 71) );
+    $pushButtonInstallHelp->setGeometry( Qt::Rect(430, 180, 92, 21) );
     my $pushButtonInstall = Qt::PushButton( $tab_3 );
     $self->{pushButtonInstall} = $pushButtonInstall;
     $pushButtonInstall->setObjectName( "pushButtonInstall" );
-    $pushButtonInstall->setGeometry( Qt::Rect(430, 120, 92, 71) );
+    $pushButtonInstall->setGeometry( Qt::Rect(430, 120, 92, 51) );
     my $checkBoxUnauthenticated = Qt::CheckBox( $tab_3 );
     $self->{checkBoxUnauthenticated} = $checkBoxUnauthenticated;
     $checkBoxUnauthenticated->setObjectName( "checkBoxUnauthenticated" );
-    $checkBoxUnauthenticated->setGeometry( Qt::Rect(170, 130, 191, 20) );
+    $checkBoxUnauthenticated->setGeometry( Qt::Rect(230, 130, 191, 20) );
     my $checkBoxRecommends = Qt::CheckBox( $tab_3 );
     $self->{checkBoxRecommends} = $checkBoxRecommends;
     $checkBoxRecommends->setObjectName( "checkBoxRecommends" );
-    $checkBoxRecommends->setGeometry( Qt::Rect(170, 150, 191, 20) );
+    $checkBoxRecommends->setGeometry( Qt::Rect(230, 150, 191, 20) );
+    $checkBoxRecommends->setChecked( 1 );
     my $checkBoxForceYes = Qt::CheckBox( $tab_3 );
     $self->{checkBoxForceYes} = $checkBoxForceYes;
     $checkBoxForceYes->setObjectName( "checkBoxForceYes" );
-    $checkBoxForceYes->setGeometry( Qt::Rect(170, 170, 121, 20) );
+    $checkBoxForceYes->setGeometry( Qt::Rect(230, 170, 121, 20) );
+    my $pushButtonInstallSelectPreseedFile = Qt::PushButton( $tab_3 );
+    $self->{pushButtonInstallSelectPreseedFile} = $pushButtonInstallSelectPreseedFile;
+    $pushButtonInstallSelectPreseedFile->setObjectName( "pushButtonInstallSelectPreseedFile" );
+    $pushButtonInstallSelectPreseedFile->setEnabled( 0 );
+    $pushButtonInstallSelectPreseedFile->setGeometry( Qt::Rect(20, 130, 191, 27) );
+    my $lineEditInstallPreseedFile = Qt::LineEdit( $tab_3 );
+    $self->{lineEditInstallPreseedFile} = $lineEditInstallPreseedFile;
+    $lineEditInstallPreseedFile->setObjectName( "lineEditInstallPreseedFile" );
+    $lineEditInstallPreseedFile->setEnabled( 0 );
+    $lineEditInstallPreseedFile->setGeometry( Qt::Rect(20, 160, 191, 25) );
+    my $label_6 = Qt::Label( $tab_3 );
+    $self->{label_6} = $label_6;
+    $label_6->setObjectName( "label_6" );
+    $label_6->setGeometry( Qt::Rect(10, 10, 251, 16) );
     $tabWidget->addTab( $tab_3, Qt::Application::translate( 'DebrootForm', "Install", undef, Qt::Application::UnicodeUTF8() ) );
     my $tab_4 = Qt::Widget(  );
     $self->{tab_4} = $tab_4;
@@ -372,16 +440,6 @@ sub setupUi {
     my $tab_5 = Qt::Widget(  );
     $self->{tab_5} = $tab_5;
     $tab_5->setObjectName( "tab_5" );
-    my $pushButtonBuildLiveISO = Qt::PushButton( $tab_5 );
-    $self->{pushButtonBuildLiveISO} = $pushButtonBuildLiveISO;
-    $pushButtonBuildLiveISO->setObjectName( "pushButtonBuildLiveISO" );
-    $pushButtonBuildLiveISO->setEnabled( 1 );
-    $pushButtonBuildLiveISO->setGeometry( Qt::Rect(160, 100, 111, 27) );
-    my $pushButtonBuildUSBIMG = Qt::PushButton( $tab_5 );
-    $self->{pushButtonBuildUSBIMG} = $pushButtonBuildUSBIMG;
-    $pushButtonBuildUSBIMG->setObjectName( "pushButtonBuildUSBIMG" );
-    $pushButtonBuildUSBIMG->setEnabled( 0 );
-    $pushButtonBuildUSBIMG->setGeometry( Qt::Rect(290, 100, 111, 27) );
     my $checkBoxUEFI = Qt::CheckBox( $tab_5 );
     $self->{checkBoxUEFI} = $checkBoxUEFI;
     $checkBoxUEFI->setObjectName( "checkBoxUEFI" );
@@ -392,15 +450,46 @@ sub setupUi {
     $checkBoxCustomInstaller->setObjectName( "checkBoxCustomInstaller" );
     $checkBoxCustomInstaller->setEnabled( 0 );
     $checkBoxCustomInstaller->setGeometry( Qt::Rect(60, 50, 271, 20) );
-    my $pushButtonBackupROOTFS = Qt::PushButton( $tab_5 );
+    my $groupBox_4 = Qt::GroupBox( $tab_5 );
+    $self->{groupBox_4} = $groupBox_4;
+    $groupBox_4->setObjectName( "groupBox_4" );
+    $groupBox_4->setGeometry( Qt::Rect(10, 80, 241, 101) );
+    my $pushButtonPrepareLiveISO = Qt::PushButton( $groupBox_4 );
+    $self->{pushButtonPrepareLiveISO} = $pushButtonPrepareLiveISO;
+    $pushButtonPrepareLiveISO->setObjectName( "pushButtonPrepareLiveISO" );
+    $pushButtonPrepareLiveISO->setEnabled( 1 );
+    $pushButtonPrepareLiveISO->setGeometry( Qt::Rect(10, 20, 101, 71) );
+    my $pushButtonBuildLiveISO = Qt::PushButton( $groupBox_4 );
+    $self->{pushButtonBuildLiveISO} = $pushButtonBuildLiveISO;
+    $pushButtonBuildLiveISO->setObjectName( "pushButtonBuildLiveISO" );
+    $pushButtonBuildLiveISO->setEnabled( 1 );
+    $pushButtonBuildLiveISO->setGeometry( Qt::Rect(120, 20, 111, 71) );
+    my $groupBox_5 = Qt::GroupBox( $tab_5 );
+    $self->{groupBox_5} = $groupBox_5;
+    $groupBox_5->setObjectName( "groupBox_5" );
+    $groupBox_5->setGeometry( Qt::Rect(260, 80, 131, 101) );
+    my $pushButtonBuildUSBIMG = Qt::PushButton( $groupBox_5 );
+    $self->{pushButtonBuildUSBIMG} = $pushButtonBuildUSBIMG;
+    $pushButtonBuildUSBIMG->setObjectName( "pushButtonBuildUSBIMG" );
+    $pushButtonBuildUSBIMG->setEnabled( 0 );
+    $pushButtonBuildUSBIMG->setGeometry( Qt::Rect(10, 70, 111, 27) );
+    my $lineEditBuildUSBUsername = Qt::LineEdit( $groupBox_5 );
+    $self->{lineEditBuildUSBUsername} = $lineEditBuildUSBUsername;
+    $lineEditBuildUSBUsername->setObjectName( "lineEditBuildUSBUsername" );
+    $lineEditBuildUSBUsername->setEnabled( 0 );
+    $lineEditBuildUSBUsername->setGeometry( Qt::Rect(10, 40, 113, 25) );
+    my $label_5 = Qt::Label( $groupBox_5 );
+    $self->{label_5} = $label_5;
+    $label_5->setObjectName( "label_5" );
+    $label_5->setGeometry( Qt::Rect(10, 20, 81, 16) );
+    my $groupBox_6 = Qt::GroupBox( $tab_5 );
+    $self->{groupBox_6} = $groupBox_6;
+    $groupBox_6->setObjectName( "groupBox_6" );
+    $groupBox_6->setGeometry( Qt::Rect(410, 80, 111, 101) );
+    my $pushButtonBackupROOTFS = Qt::PushButton( $groupBox_6 );
     $self->{pushButtonBackupROOTFS} = $pushButtonBackupROOTFS;
     $pushButtonBackupROOTFS->setObjectName( "pushButtonBackupROOTFS" );
-    $pushButtonBackupROOTFS->setGeometry( Qt::Rect(410, 100, 92, 27) );
-    my $pushButtonRebuildLiveISO = Qt::PushButton( $tab_5 );
-    $self->{pushButtonRebuildLiveISO} = $pushButtonRebuildLiveISO;
-    $pushButtonRebuildLiveISO->setObjectName( "pushButtonRebuildLiveISO" );
-    $pushButtonRebuildLiveISO->setEnabled( 1 );
-    $pushButtonRebuildLiveISO->setGeometry( Qt::Rect(20, 100, 131, 27) );
+    $pushButtonBackupROOTFS->setGeometry( Qt::Rect(10, 40, 92, 27) );
     $tabWidget->addTab( $tab_5, Qt::Application::translate( 'DebrootForm', "Build", undef, Qt::Application::UnicodeUTF8() ) );
     my $label = Qt::Label( $debrootForm );
     $self->{label} = $label;
@@ -443,28 +532,40 @@ sub retranslateUi {
     $self->{label_3}->setText( Qt::Application::translate( 'DebrootForm', "Additional debootstrap options to be used:", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{tabWidget}->setTabText( $self->{tabWidget}->indexOf( $self->{tab}), Qt::Application::translate( 'DebrootForm', "Debootstrap", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonRead}->setText( Qt::Application::translate( 'DebrootForm', "Read", undef, Qt::Application::UnicodeUTF8() ) );
-    $self->{pushButtonWrite}->setText( Qt::Application::translate( 'DebrootForm', "Write", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{pushButtonSave}->setText( Qt::Application::translate( 'DebrootForm', "Save", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonSourcesHelp}->setText( Qt::Application::translate( 'DebrootForm', "Help", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonUpdate}->setText( Qt::Application::translate( 'DebrootForm', "Update", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonUpgrade}->setText( Qt::Application::translate( 'DebrootForm', "Upgrade", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonDistUpgrade}->setText( Qt::Application::translate( 'DebrootForm', "Dist-Upgrade", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{label_7}->setText( Qt::Application::translate( 'DebrootForm', "sources.list", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{label_8}->setText( Qt::Application::translate( 'DebrootForm', "APT", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{tabWidget}->setTabText( $self->{tabWidget}->indexOf( $self->{tab_2}), Qt::Application::translate( 'DebrootForm', "sources.list/upgrade", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonInstallHelp}->setText( Qt::Application::translate( 'DebrootForm', "Help", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonInstall}->setText( Qt::Application::translate( 'DebrootForm', "Install", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{checkBoxUnauthenticated}->setText( Qt::Application::translate( 'DebrootForm', "--allow-unauthenticated", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{checkBoxRecommends}->setText( Qt::Application::translate( 'DebrootForm', "--no-install-recommends", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{checkBoxForceYes}->setText( Qt::Application::translate( 'DebrootForm', "-y --force-yes", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{pushButtonInstallSelectPreseedFile}->setText( Qt::Application::translate( 'DebrootForm', "Select preseed file", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{label_6}->setText( Qt::Application::translate( 'DebrootForm', "Packages (space separated list):", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{tabWidget}->setTabText( $self->{tabWidget}->indexOf( $self->{tab_3}), Qt::Application::translate( 'DebrootForm', "Install", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonChrootShell}->setText( Qt::Application::translate( 'DebrootForm', "Chroot Shell", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonChrootRDP}->setText( Qt::Application::translate( 'DebrootForm', "Chroot RDP", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{tabWidget}->setTabText( $self->{tabWidget}->indexOf( $self->{tab_4}), Qt::Application::translate( 'DebrootForm', "Chroot", undef, Qt::Application::UnicodeUTF8() ) );
-    $self->{pushButtonBuildLiveISO}->setText( Qt::Application::translate( 'DebrootForm', "Build Live ISO", undef, Qt::Application::UnicodeUTF8() ) );
-    $self->{pushButtonBuildUSBIMG}->setText( Qt::Application::translate( 'DebrootForm', "Build USB IMG", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{checkBoxUEFI}->setText( Qt::Application::translate( 'DebrootForm', "UEFI enabled", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{checkBoxCustomInstaller}->setText( Qt::Application::translate( 'DebrootForm', "Add custom disk installer to image", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{groupBox_4}->setTitle( Qt::Application::translate( 'DebrootForm', "Live ISO", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{pushButtonPrepareLiveISO}->setText( Qt::Application::translate( 'DebrootForm', "Prepare\n" .
+"or update\n" .
+" ISO content", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{pushButtonBuildLiveISO}->setText( Qt::Application::translate( 'DebrootForm', "Build ISO", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{groupBox_5}->setTitle( Qt::Application::translate( 'DebrootForm', "USB image", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{pushButtonBuildUSBIMG}->setText( Qt::Application::translate( 'DebrootForm', "Build USB IMG", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{lineEditBuildUSBUsername}->setText( '' );
+    $self->{lineEditBuildUSBUsername}->setPlaceholderText( '' );
+    $self->{label_5}->setText( Qt::Application::translate( 'DebrootForm', "Username:", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{groupBox_6}->setTitle( Qt::Application::translate( 'DebrootForm', "Chroot", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonBackupROOTFS}->setToolTip( Qt::Application::translate( 'DebrootForm', "Backup ROOTFS directory to a .tar.gz file for future use.", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonBackupROOTFS}->setText( Qt::Application::translate( 'DebrootForm', "Backup", undef, Qt::Application::UnicodeUTF8() ) );
-    $self->{pushButtonRebuildLiveISO}->setText( Qt::Application::translate( 'DebrootForm', "Rebuild Live ISO", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{tabWidget}->setTabText( $self->{tabWidget}->indexOf( $self->{tab_5}), Qt::Application::translate( 'DebrootForm', "Build", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{label}->setText( Qt::Application::translate( 'DebrootForm', "ROOTFS Directory:", undef, Qt::Application::UnicodeUTF8() ) );
 } # retranslateUi

@@ -265,7 +265,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>160</y>
        <width>61</width>
        <height>27</height>
       </rect>
@@ -274,17 +274,17 @@
       <string>Read</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButtonWrite">
+    <widget class="QPushButton" name="pushButtonSave">
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>130</y>
+       <y>160</y>
        <width>71</width>
        <height>27</height>
       </rect>
      </property>
      <property name="text">
-      <string>Write</string>
+      <string>Save</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonSourcesHelp">
@@ -303,7 +303,7 @@
     <widget class="QPushButton" name="pushButtonUpdate">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>190</x>
        <y>160</y>
        <width>111</width>
        <height>27</height>
@@ -339,6 +339,44 @@
       <string>Dist-Upgrade</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>sources.list</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>140</y>
+       <width>59</width>
+       <height>15</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>APT</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
@@ -348,19 +386,19 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>30</y>
        <width>511</width>
-       <height>111</height>
+       <height>91</height>
       </rect>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonInstallHelp">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>120</y>
+       <x>430</x>
+       <y>180</y>
        <width>92</width>
-       <height>71</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -373,7 +411,7 @@
        <x>430</x>
        <y>120</y>
        <width>92</width>
-       <height>71</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="text">
@@ -383,7 +421,7 @@
     <widget class="QCheckBox" name="checkBoxUnauthenticated">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>230</x>
        <y>130</y>
        <width>191</width>
        <height>20</height>
@@ -396,7 +434,7 @@
     <widget class="QCheckBox" name="checkBoxRecommends">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>230</x>
        <y>150</y>
        <width>191</width>
        <height>20</height>
@@ -405,11 +443,14 @@
      <property name="text">
       <string>--no-install-recommends</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QCheckBox" name="checkBoxForceYes">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>230</x>
        <y>170</y>
        <width>121</width>
        <height>20</height>
@@ -417,6 +458,48 @@
      </property>
      <property name="text">
       <string>-y --force-yes</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtonInstallSelectPreseedFile">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>130</y>
+       <width>191</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select preseed file</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEditInstallPreseedFile">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>160</y>
+       <width>191</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>251</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Packages (space separated list):</string>
      </property>
     </widget>
    </widget>
@@ -458,38 +541,6 @@
     <attribute name="title">
      <string>Build</string>
     </attribute>
-    <widget class="QPushButton" name="pushButtonBuildLiveISO">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>100</y>
-       <width>111</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Build Live ISO</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonBuildUSBIMG">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>100</y>
-       <width>111</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Build USB IMG</string>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkBoxUEFI">
      <property name="enabled">
       <bool>false</bool>
@@ -522,37 +573,142 @@
       <string>Add custom disk installer to image</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButtonBackupROOTFS">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>241</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Live ISO</string>
+     </property>
+     <widget class="QPushButton" name="pushButtonPrepareLiveISO">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>101</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Prepare
+or update
+ ISO content</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButtonBuildLiveISO">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>20</y>
+        <width>111</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Build ISO</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>80</y>
+       <width>131</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>USB image</string>
+     </property>
+     <widget class="QPushButton" name="pushButtonBuildUSBIMG">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>111</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Build USB IMG</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEditBuildUSBUsername">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>113</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>81</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Username:</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_6">
      <property name="geometry">
       <rect>
        <x>410</x>
-       <y>100</y>
-       <width>92</width>
-       <height>27</height>
+       <y>80</y>
+       <width>111</width>
+       <height>101</height>
       </rect>
      </property>
-     <property name="toolTip">
-      <string>Backup ROOTFS directory to a .tar.gz file for future use.</string>
+     <property name="title">
+      <string>Chroot</string>
      </property>
-     <property name="text">
-      <string>Backup</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonRebuildLiveISO">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>100</y>
-       <width>131</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Rebuild Live ISO</string>
-     </property>
+     <widget class="QPushButton" name="pushButtonBackupROOTFS">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>92</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Backup ROOTFS directory to a .tar.gz file for future use.</string>
+      </property>
+      <property name="text">
+       <string>Backup</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

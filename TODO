@@ -2,15 +2,9 @@
 #
 # FIXME: BUG: the dpkg query call to generate manifest is not working.
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
-# IMPROV: GUI: enable "--no-install-recommends" by default; user unchek if wanted.
-# FIXME: GUI: rename "Write" to "Save".
-# FIXME: GUI: rename "rebuild iso" to "build iso" and "build iso" to "prepare/update iso content" and swap buttons positions. disable "prepare iso" if a $dir-binary already exists. Maybe rearrange Unsquash tab and Build tab to one and move "Build Live ISO" and "Backup" to "Chroot" tab.
-# IMPROV: copyright/license.
 # IMPROV: debian packaging.
 # IMPROV: GUI: add a "Browse chroot" button in "Build" tab and run "xdg-open $dir" to browse/change files in $dir. Only available if $dir exists.
 # IMPROV: GUI: add a "Browse binary" button in "Build" tab and run "xdg-open $dir-binary" to browse/change files in $dir-binary. Only available if $dir-binary exists.
-# IMPROV: GUI: add a "preseed file" button in "Install" tab to load a preseed file to be used when installing the packages.
-# IMPROV: GUI: set default debian release to "jessie" and default ubuntu release to "xenial".
 # IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
 # IMPROV: GUI: in install tab add a button to choose a script/hook to do automated stuff.
 # IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
@@ -18,6 +12,7 @@
 # FIXME: only happens with sudo; does not with gksudo:
 #Object::connect: No such signal QLineEdit::textChanged()
 #Object::connect:  (sender name:   'lineEditISOPath')
+# IMPROV: GUI: run x apps from chroot with or without xnest: <https://help.ubuntu.com/community/BasicChroot> or <https://wiki.gentoo.org/wiki/Project:X86/Chroot_Guide#Running_X_apps_inside_the_chroot>.
 # IMPROV: build USB img.
 # IMPROV: support UEFI.
 # IMPROV: upgrade livecd button: unsquash; remove casper from chroot to update initramfs; run dist-upgrade to update kernel; update vmlinuz and initrd.lz; reinstall casper in chroot.
