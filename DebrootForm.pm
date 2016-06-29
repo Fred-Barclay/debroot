@@ -371,11 +371,15 @@ sub on_pushButtonBuildLiveISO_clicked {
 	this->run_chroot( $dir, "apt-get clean" );
 
 	## reinstall (update) vmlinuz and initrd in live binary
-	if ( ! -e "$dir/boot/initrd-*" ) {
+	if (glob("$dir/boot/initrd-*")) {
+		;
+	} else {
 		# regenerate new kernel boot files
 		this->run_chroot_terminal( $dir, "dpkg-reconfigure initramfs-tools" );
 	}
-	if ( ! -e "$dir/boot/vminuz-*" ) {
+	if (glob("$dir/boot/vmlinuz-*")) {
+		;
+	} else {
 		# reinstall kernel
 		my $kernel = `ls $dir/vmlinuz -la | cut -d'>' -f 2`;
 		$kernel =~ s/ boot\/vmlinuz-//;
@@ -461,6 +465,8 @@ sub on_pushButtonBuildLiveISO_clicked {
 	my $hybrid_options = "";
 	if ( -e "$dir-binary/isolinux/isohdpfx.bin" ) {
 		$hybrid_options = "-isohybrid-mbr isolinux/isohdpfx.bin";
+	} else {
+		print "./isolinux/isohdpfx.bin not found; building non isohybrid iso.\n";
 	}
 
 	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs $hybrid_options -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
@@ -569,16 +575,22 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	}
 	if ( "$distro" eq "ubuntu" ) {
 		$live_packages = "casper lupin-casper";
-		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
+		if (glob("$dir/boot/vmlinuz-*")) {
+			;
+		} else {
 			$linux_packages = "linux-image-generic";
 		}
-		if ( !( -e "$dir/usr/share/doc/plymouth-theme-ubuntu-*" ) ) {
+		if (glob("$dir/usr/share/doc/plymouth-theme-*" )) {
+			;
+		} else {
 			# install at least one plymouth theme, needed for integrity check
 			$additional_packages = $additional_packages . " plymouth-theme-ubuntu-text";
 		}
 	} else {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
-		if ( !( -e "$dir/boot/vmlinuz-*" ) ) {
+		if (glob("$dir/boot/vmlinuz-*" )) {
+			;
+		} else {
 			my $arch = `chroot $dir dpkg --print-architecture`;
 			if ( "$arch" eq "amd64\n" ) {
 				$linux_packages = "linux-image-amd64";
