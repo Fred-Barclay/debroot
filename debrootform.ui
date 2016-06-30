@@ -87,7 +87,7 @@
    <property name="currentIndex">
     <number>1</number>
    </property>
-   <widget class="QWidget" name="tab_6">
+   <widget class="QWidget" name="tab_Unsquash">
     <attribute name="title">
      <string>Unsquash ISO</string>
     </attribute>
@@ -115,6 +115,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonUnsquash">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -147,11 +150,14 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab">
+   <widget class="QWidget" name="tab_Debbootstrap">
     <attribute name="title">
      <string>Debootstrap</string>
     </attribute>
     <widget class="QPushButton" name="pushButtonDebootstrap">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>420</x>
@@ -247,7 +253,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_2">
+   <widget class="QWidget" name="tab_Upgrade">
     <attribute name="title">
      <string>sources.list/upgrade</string>
     </attribute>
@@ -262,6 +268,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonRead">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -275,6 +284,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonSave">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>80</x>
@@ -301,6 +313,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonUpdate">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>190</x>
@@ -314,6 +329,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonUpgrade">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>310</x>
@@ -327,6 +345,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonDistUpgrade">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -378,7 +399,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_3">
+   <widget class="QWidget" name="tab_Install">
     <attribute name="title">
      <string>Install</string>
     </attribute>
@@ -406,6 +427,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonInstall">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -503,11 +527,14 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_4">
+   <widget class="QWidget" name="tab_Chroot">
     <attribute name="title">
      <string>Chroot</string>
     </attribute>
     <widget class="QPushButton" name="pushButtonChrootShell">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -537,7 +564,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_5">
+   <widget class="QWidget" name="tab_Build">
     <attribute name="title">
      <string>Build</string>
     </attribute>
@@ -587,7 +614,7 @@
      </property>
      <widget class="QPushButton" name="pushButtonPrepareLiveISO">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -605,7 +632,7 @@ or update
      </widget>
      <widget class="QPushButton" name="pushButtonBuildLiveISO">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -694,6 +721,9 @@ or update
       <string>Chroot</string>
      </property>
      <widget class="QPushButton" name="pushButtonBackupROOTFS">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>

@@ -31,7 +31,8 @@ use QtCore4::slots
 	on_pushButtonChrootShell_clicked => [],
 	on_pushButtonPrepareLiveISO_clicked => [],
 	on_pushButtonBuildLiveISO_clicked => [],
-	on_pushButtonBackupROOTFS_clicked=> [];
+	on_pushButtonBackupROOTFS_clicked=> [],
+	on_tabWidget_currentChanged=>[];
 # [1]
 
 # [0]
@@ -123,11 +124,6 @@ sub on_pushButtonSelectISO_clicked {
 	my ( $value ) = @_;
 	my $file = Qt::FileDialog::getOpenFileName( this, "Select ISO files", "/media/", "iso files (*.iso)" );
 	this->{ui}->{lineEditISOPath}->setText( $file );
-	# enable rebuild live iso button
-	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
-	# disabble build live iso button
-	#this->{ui}->{pushButtonBuildLiveISO}->setEnabled(0);
-
 }
 # [1]
 
@@ -159,6 +155,11 @@ sub on_pushButtonUnsquash_clicked {
 
 	this->run_system( "umount $dir-iso" );
 	this->run_system( "rmdir $dir-iso" );
+
+	# enable build live iso button
+	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
+	# disable prepare live iso button
+	this->{ui}->{pushButtonPrepareLiveISO}->setEnabled(0);
 }
 # [1]
 
@@ -196,6 +197,11 @@ sub on_pushButtonDebootstrap_clicked {
 	# enable debootstrap button
 	this->{ui}->{pushButtonDebootstrap}->setText( 'debootstrap' );
 	this->{ui}->{pushButtonDebootstrap}->setEnabled( 1 );
+
+	# disable build live iso button
+	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(0);
+	# enable prepare live iso button
+	this->{ui}->{pushButtonPrepareLiveISO}->setEnabled(1);
 }
 # [1]
 
@@ -215,6 +221,9 @@ sub on_pushButtonRead_clicked {
 	close( $fh )
 		|| warn "close $sourcesfile failed: $!";
 	this->{ui}->{plainTextEditSourcesList}->setPlainText( "$sourcescontent" );
+
+		# enable save sources file button
+		this->{ui}->{pushButtonSave}->setEnabled(1);
 }
 # [1]
 
@@ -630,8 +639,8 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	#	system ( $command );
 	#}
 
-	#this->on_pushButtonPrepareLiveISO_clicked();
-	#QMetaObject::invokeMethod( this->{ui}->{pushButtonPrepareLiveISO}, "clicked" );
+	# enable build live iso button
+	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
 }
 # [1]
 
@@ -645,6 +654,39 @@ sub on_pushButtonBackupROOTFS_clicked {
 }
 # [1]
 
+################################ enable buttons with sense
+# [1]
+sub on_tabWidget_currentChanged {
+	my ( $value ) = @_;
+
+	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
+
+	if ( -e "$dir") {
+		# enable load sourceslist button
+		this->{ui}->{pushButtonRead}->setEnabled(1);
+		# enable update/upgrade/dist-upgrade
+		this->{ui}->{pushButtonUpdate}->setEnabled(1);
+		this->{ui}->{pushButtonUpgrade}->setEnabled(1);
+		this->{ui}->{pushButtonDistUpgrade}->setEnabled(1);
+		# enable install button
+		this->{ui}->{pushButtonInstall}->setEnabled(1);
+		# enable chroot button
+		this->{ui}->{pushButtonChrootShell}->setEnabled(1);
+		# enable chroot backup button
+		this->{ui}->{pushButtonBackupROOTFS}->setEnabled(1);
+	}
+
+	if ( -e "$dir-binary") {
+		# disable prepare ISO button
+		this->{ui}->{pushButtonPrepareLiveISO}->setEnabled(0);
+		# enable build iso button
+		this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
+	}
+}
+# [1]
+
+
+################################ Other functions
 # [1]
 sub install_temp_pkg_system {
 	my ( @packages ) = @_;
