@@ -3,7 +3,10 @@
 # FIXME: BUG: the dpkg query call to generate manifest is not working.
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
 # IMPROV: debian packaging.
-# IMPROV:GUI: make some sense: toggle off debootstrap and "prepare live iso" if "unsqhash" is clicked; if "debootstrap" is clicked toggle off "unsquash" and enable "prepare iso". "prepare iso" should only be available if ROOTFS-binary directory exists.
+# IMPROV:GUI: make some sense:
+#toggle off debootstrap and "prepare live iso" if "unsqhash" is clicked;
+#if "debootstrap" is clicked toggle off "unsquash" and enable "prepare iso";
+#"build iso" should only be available if ROOTFS-binary directory exists.
 # IMPROV: GUI: add a "Browse chroot" button in "Build" tab and run "xdg-open $dir" to browse/change files in $dir. Only available if $dir exists.
 # IMPROV: GUI: add a "Browse binary" button in "Build" tab and run "xdg-open $dir-binary" to browse/change files in $dir-binary. Only available if $dir-binary exists.
 # IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
