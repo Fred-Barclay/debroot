@@ -891,6 +891,16 @@ sub prepare_chroot {
 	this->run_chroot( $dir, "dpkg-divert --local --rename --add $initfile" );
 	this->run_chroot( $dir, "ln -s /bin/true $initfile" );
 
+	# grub-update in a chroot is a PITA (see <http://bugs.debian.org/538118>);
+	# Workaround: <http://edoceo.com/notabene/grub-probe-error-cannot-find-device-for-root>.
+	if ( -e "$dir/usr/sbin/grub-probe" ) {
+		if ( ! -e "$dir/usr/sbin/grub-probe.distrib") {
+			this->run_system( "wget http://edoceo.com/pub/grub-probe.sh -O fake-grub-probe.sh" )
+		}
+		this->run_chroot( $dir, "dpkg-divert --local --rename --add /usr/sbin/grub-probe" );
+		this->run_system( "cp fake-grub-probe.sh $dir/usr/sbin/grub-probe" );
+		this->run_system( "chmod 755 $dir/usr/sbin/grub-probe" );
+	}
 }
 # [1]
 
@@ -908,6 +918,10 @@ sub release_chroot {
 	my $initfile = this->get_chroot_initfile( $dir );
 
 	unlink "$dir"."$initfile";
+	if ( -e "$dir/usr/sbin/grub-probe.distrib" ) {
+		unlink "$dir/usr/sbin/grub-probe";
+		this->run_chroot( $dir, "dpkg-divert --rename --remove /usr/sbin/grub-probe" );
+	}
 
 	this->run_chroot( $dir, "dpkg-divert --rename --remove $initfile" );
 
