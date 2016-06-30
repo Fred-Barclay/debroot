@@ -856,7 +856,27 @@ sub prepare_chroot {
 	this->run_system( "cp /etc/resolv.conf $dir/etc/" );
 	this->run_system( "cp /etc/hosts $dir/etc/" );
 
-	#this->run_system( "mount -o bind /dev $dir/dev" );
+	# Make a minimal /dev directory; should be enough for openssl and python3-minimal.
+	if ( ! -e "$dir/dev/random" ) {
+		this->run_system( "mknod $dir/dev/random c 1 8" );
+		this->run_system( "chmod 640 $dir/dev/random" );
+		this->run_system( "chown 0:0 $dir/dev/random" );
+	}
+	if ( ! -e "$dir/dev/urandom" ) {
+		this->run_system( "mknod $dir/dev/urandom c 1 9" );
+		this->run_system( "chmod 640 $dir/dev/urandom" );
+		this->run_system( "chown 0:0 $dir/dev/urandom" );
+	}
+	if ( ! -e "$dir/dev/null" ) {
+		this->run_system( "mknod $dir/dev/null c 1 3" );
+		this->run_system( "chmod 666 $dir/dev/null" );
+	}
+	if ( ! -e "$dir/dev/pts" ) {
+		this->run_system( "mkdir -p $dir/dev/pts" );
+	}
+	# udev is almost a mount --bind /dev, reveals host hardware in chroot, not suitable here.
+	#this->run_system( "mount udev -t devtmpfs $dir/dev" );
+
 	this->run_system( "mount -t proc none $dir/proc" );
 	this->run_system( "mount -t sysfs none $dir/sys" );
 	this->run_system( "mkdir -p $dir/dev/pts" );
@@ -894,7 +914,7 @@ sub release_chroot {
 	this->run_system( "umount -l $dir/dev/pts" );
 	this->run_system( "umount -l $dir/sys" );
 	this->run_system( "umount -l $dir/proc" );
-	#this->run_system( "umount -l $dir/dev" );
+	this->run_system( "umount -l $dir/dev" );
 
 	unlink "$dir/etc/hosts";
 	unlink "$dir/etc/resolv.conf";
