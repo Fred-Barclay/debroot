@@ -380,15 +380,11 @@ sub on_pushButtonBuildLiveISO_clicked {
 	this->run_chroot( $dir, "apt-get clean" );
 
 	## reinstall (update) vmlinuz and initrd in live binary
-	if (glob("$dir/boot/initrd-*")) {
-		;
-	} else {
+	if (!glob("$dir/boot/initrd-*")) {
 		# regenerate new kernel boot files
 		this->run_chroot_terminal( $dir, "dpkg-reconfigure initramfs-tools" );
 	}
-	if (glob("$dir/boot/vmlinuz-*")) {
-		;
-	} else {
+	if (!glob("$dir/boot/vmlinuz-*")) {
 		# reinstall kernel
 		my $kernel = `ls $dir/vmlinuz -la | cut -d'>' -f 2`;
 		$kernel =~ s/ boot\/vmlinuz-//;
@@ -584,22 +580,16 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	}
 	if ( "$distro" eq "ubuntu" ) {
 		$live_packages = "casper lupin-casper";
-		if (glob("$dir/boot/vmlinuz-*")) {
-			;
-		} else {
+		if (!glob("$dir/boot/vmlinuz-*")) {
 			$linux_packages = "linux-image-generic";
 		}
-		if (glob("$dir/usr/share/doc/plymouth-theme-*" )) {
-			;
-		} else {
+		if (!glob("$dir/usr/share/doc/plymouth-theme-*" )) {
 			# install at least one plymouth theme, needed for integrity check
 			$additional_packages = $additional_packages . " plymouth-theme-ubuntu-text";
 		}
 	} else {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
-		if (glob("$dir/boot/vmlinuz-*" )) {
-			;
-		} else {
+		if (!glob("$dir/boot/vmlinuz-*" )) {
 			my $arch = `chroot $dir dpkg --print-architecture`;
 			if ( "$arch" eq "amd64\n" ) {
 				$linux_packages = "linux-image-amd64";
