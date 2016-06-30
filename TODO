@@ -1,6 +1,7 @@
 # TODO/FIXME
 #
 # FIXME: BUG: the dpkg query call to generate manifest is not working.
+# IMPROV: GUI: add a "apt clean" and a "apt autoremove --purge" buttons.
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
 # IMPROV: debian packaging.
 # IMPROV: GUI: add a "Browse chroot" button in "Build" tab and run "xdg-open $dir" to browse/change files in $dir. Only available if $dir exists.
