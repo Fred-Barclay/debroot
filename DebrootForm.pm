@@ -380,7 +380,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 	this->run_chroot( $dir, "apt-get clean" );
 
 	## reinstall (update) vmlinuz and initrd in live binary
-	if (!glob("$dir/boot/initrd-*")) {
+	if (!glob("$dir/boot/initrd.img*")) {
 		# regenerate new kernel boot files
 		this->run_chroot_terminal( $dir, "dpkg-reconfigure initramfs-tools" );
 	}
