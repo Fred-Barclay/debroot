@@ -472,8 +472,9 @@ sub on_pushButtonBuildLiveISO_clicked {
 		$hybrid_options = "-isohybrid-mbr isolinux/isohdpfx.bin";
 	} else {
 		print "./isolinux/isohdpfx.bin not found; building non isohybrid iso.\n";
+		print "To turn $dir.iso into a isohybrid iso run the command:\n";
+		print "isohybrid filename.iso\n";
 	}
-
 	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs $hybrid_options -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
 
 	this->remove_temp_pkg_system();
