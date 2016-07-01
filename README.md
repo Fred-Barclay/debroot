@@ -2,7 +2,12 @@
 
 ![alt tag](https://raw.githubusercontent.com/rbern/debroot/master/debroot.png)
 
-This app started while exploring perl and QT. It started as an app that could create and run chroots. When this was reached, the potentialities of perl QT made me want go further and from the chroot I wanted to make a Live iso image and usb images. As the doors were opening I added support for Ubuntu and Debian and made the app create a bash script (instead of keeping build logs) that can rebuild the whole process without the use of this app.
+An app that can:
+
+* create (debootstrap) a debian or ubuntu system;
+* run a shell in the chroot filesystem;
+* create a live iso from the created chroot filesystem;
+* unsquash, update and rebuild an existing ubuntu or debian and their derivatives live ISO image.
 
 ATM the app does the following:
 
@@ -16,7 +21,9 @@ ATM the app does the following:
 See TODO file.
 
 * To enable "Unsquash" button you may have to type and remove text in the "ROOTFS Directory" text input;
-* some buttons are disabled because they are not implemeted yet.
+* Some buttons are disabled because they are not implemeted yet. Its the case of "build USB image" and "chroot RDP" buttons.
+* The produced ISO file is not isohybrid if one unsquashes an existing ISO. Easy fix: run "isohybrid file.iso".
+* The produced ISO file is not UEFI compatible (see below).
 
 # ROADMAP
 
@@ -47,10 +54,45 @@ To update the GUI after changes made in qt4-designer:
 
 	sudo ./debroot.pl
 
+# How to
+
+## Quick build a clean live iso from stratch
+
+* Select the distribution (Ubuntu or Debian) and select the release;
+* If you have selected Ubuntu, on the Debootstrap tab, on the "Additional options" type "--components=main,universe" to allow to download some packages from there;
+* Type the directory where the new chroot will be built in "ROOTFS directory";
+* Click "Debootstrap" button and wait until it finishes;
+* Click the "Build" tab. You will have a "Prepare ISO" button available while "Build ISO" is not. Click "Prepare ISO" and wait. Reply "Yes" to all package installs needed to make a Live system;
+* After "Prepare ISO" is finished, the button "Build ISO" should now be available. Click it to build the Live iso of a chroot.
+
+## Upgrade and rebuild of an existing Live ISO
+
+* Type the directory where the ISO chroot content will be extrated in "ROOTFS directory";
+* Click the "Unsquash" tab, click "Select ISO" button to select an existing ISO;
+* After the file is selected the button "Unsquash" should now be available. If not add and remove text in the "ROOTFS directory" to update the UI interface (its a bug);
+* Click the "Unsquash" button and wait;
+* Click the "sources.list/upgrade" tab. Click the button "Read" to load the existing "sources.list" present in the chroot. Click the "Update" button to run an "apt-get update" in the chroot;
+* Click the "Upgrade" button to upgrade the content of the chroot, as a "apt-get upgrade" would do. Running "dist-upgrade" is not recommended, but available;
+* Click the "Install" tab to install additional packages to the live image;
+* After installing or upgrading the system, click the tab "Chroot" and then click the button "Chroot Shell";
+* In the shell type "apt-get autoremove --purge" and "apt-get clean" to reduce the size of the resulting live image. Type "exit" to return to the app;
+* Now click the "Build" tab and the button "Build ISO" should be available. Click it.
+
+# Tested distros (Unsquash/upgrade/rebuild)
+
+This app works with either ubuntu and debian and their derivatives. It was tested with the following distros:
+
+* Ubuntu 16.04;
+* Debian 7 and 8 (although Debian produces Live daily builds, one can install additional packages with debroot);
+* Kali Linux 2016.1;
+* TAILS 2.4;
+* Sparkylinux 4.3;
+* In general this app should work with any live distro that uses either casper or debian-live.
+
 # Copyright
 
 This project is licensed under the terms of the GNU GPL v2 License.
 
 (c) 2016 Rui Miguel P. Bernardo
 
-Email: rui.bernardo.pt@gmail.com
+Email: rui.bernardo.pt(at)gmail.com
