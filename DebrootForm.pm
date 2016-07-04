@@ -310,9 +310,13 @@ deb-src http://archive.ubuntu.com/ubuntu/ $release-updates main restricted unive
 deb-src http://archive.ubuntu.com/ubuntu/ $release-backports main restricted universe multiverse\n
 \n";
 	}
-	Qt::MessageBox::about(this,
+	# make messagebox text selectable and copy/paste work
+	this->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
+	Qt::MessageBox::information(this,
 		this->tr( "$text1" ),
 		this->tr( "$text2" ));
+	# return to messagebox defaults
+	this->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 0; }");
 }
 # [1]
 

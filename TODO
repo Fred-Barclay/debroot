@@ -1,7 +1,6 @@
 # TODO/FIXME
 #
 # FIXME: BUG: the dpkg query call to generate manifest is not working.
-# IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
 # IMPROV: GUI: add a "apt clean" and a "apt autoremove --purge" buttons.
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
 # IMPROV: GUI: in install tab add a button to choose a script/hook to do automated stuff.
