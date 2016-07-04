@@ -498,10 +498,23 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 
 	### TODO/FIXME
+	this->install_temp_pkg_chroot( $dir, "lsb-release" );
 
 	my $command = undef;
-	my $distro = this->get_selected_distro();
-	my $release = this->get_selected_release();
+	my $distro = this->run_chroot( $dir, "lsb_release -is > /tmp/distro" );
+	my $release = this->run_chroot( $dir, "lsb_release -cs > /tmp/release" );
+
+	this->remove_temp_pkg_chroot( $dir );
+
+	$distro = `cat $dir/tmp/distro`;
+	$release = `cat $dir/tmp/release`;
+
+	this->run_chroot( $dir, "rm -f /tmp/distro" );
+	this->run_chroot( $dir, "rm -f /tmp/release" );
+
+	$distro =~ s/\n//g;
+	$distro = lc $distro;
+	$release =~ s/\n//g;
 
 	my $livesystem = undef;
 	if ( "$distro" eq "ubuntu" ) {
