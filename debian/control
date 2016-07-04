@@ -1,0 +1,25 @@
+Source: debroot
+Section: misc
+Priority: optional
+Maintainer: Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>
+Build-Depends: debhelper (>= 9),
+ libqtgui4-perl,
+Standards-Version: 3.9.5
+Homepage: https://github.com/rbern/debroot
+#Vcs-Git: git://anonscm.debian.org/collab-maint/debroot.git
+#Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/debroot.git;a=summary
+
+Package: debroot
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ libqtgui4-perl,
+ xterm,
+Description: An app that can create chroots, create a live iso from it and rebuild live isos.
+ An app that can:
+ * create (debootstrap) a debian or ubuntu system;
+ * run a shell in the chroot filesystem;
+ * create a live iso from the created chroot filesystem;
+ * unsquash, update and rebuild an existing ubuntu or debian and their derivatives live ISO image;
+ * generates a script with all the commands that were executed to replicate the process on another host without debroot.
+ .
+ Please read README present in /usr/share/doc/debroot/ for examples.
