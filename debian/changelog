@@ -1,3 +1,12 @@
+debroot (0.02) unstable; urgency=medium
+
+  * Add install rules to Makefile, so debian packaging works.
+  * Fix: the "prepare iso" button should be available if $dir-binary does not exist.
+  * Cleanup $dir/dev/{random,urandom,null} that were created with mknod.
+  * Fix help in "Install" tab: sources.list text in messagebox has copy/paste.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Mon, 04 Jul 2016 17:28:20 +0100
+
 debroot (0.01) unstable; urgency=low
 
   * Initial Release.
