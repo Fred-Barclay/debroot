@@ -574,8 +574,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>30</y>
+       <x>270</x>
+       <y>20</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -590,9 +590,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>50</y>
-       <width>271</width>
+       <x>270</x>
+       <y>40</y>
+       <width>251</width>
        <height>20</height>
       </rect>
      </property>
@@ -604,9 +604,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>50</y>
        <width>241</width>
-       <height>101</height>
+       <height>131</height>
       </rect>
      </property>
      <property name="title">
@@ -619,14 +619,13 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
+        <y>60</y>
         <width>101</width>
-        <height>71</height>
+        <height>61</height>
        </rect>
       </property>
       <property name="text">
        <string>Prepare
-or update
  ISO content</string>
       </property>
      </widget>
@@ -637,13 +636,26 @@ or update
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>20</y>
+        <y>60</y>
         <width>111</width>
-        <height>71</height>
+        <height>61</height>
        </rect>
       </property>
       <property name="text">
        <string>Build ISO</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButtonBuildRefresh">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>20</y>
+        <width>131</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Refresh options</string>
       </property>
      </widget>
     </widget>

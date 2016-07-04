@@ -5,7 +5,7 @@
 #################################################################################
 ## Form generated from reading UI file 'debrootform.ui'
 ##
-## Created: sex Jul 1 12:33:10 2016
+## Created: seg Jul 4 15:49:16 2016
 ##      by: Qt User Interface Compiler version 4.8.6
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -212,6 +212,10 @@ sub pushButtonPrepareLiveISO {
 
 sub pushButtonBuildLiveISO {
     return shift->{pushButtonBuildLiveISO};
+}
+
+sub pushButtonBuildRefresh {
+    return shift->{pushButtonBuildRefresh};
 }
 
 sub groupBox_5 {
@@ -453,26 +457,30 @@ sub setupUi {
     $self->{checkBoxUEFI} = $checkBoxUEFI;
     $checkBoxUEFI->setObjectName( "checkBoxUEFI" );
     $checkBoxUEFI->setEnabled( 0 );
-    $checkBoxUEFI->setGeometry( Qt::Rect(60, 30, 131, 20) );
+    $checkBoxUEFI->setGeometry( Qt::Rect(270, 20, 131, 20) );
     my $checkBoxCustomInstaller = Qt::CheckBox( $tab_Build );
     $self->{checkBoxCustomInstaller} = $checkBoxCustomInstaller;
     $checkBoxCustomInstaller->setObjectName( "checkBoxCustomInstaller" );
     $checkBoxCustomInstaller->setEnabled( 0 );
-    $checkBoxCustomInstaller->setGeometry( Qt::Rect(60, 50, 271, 20) );
+    $checkBoxCustomInstaller->setGeometry( Qt::Rect(270, 40, 251, 20) );
     my $groupBox_4 = Qt::GroupBox( $tab_Build );
     $self->{groupBox_4} = $groupBox_4;
     $groupBox_4->setObjectName( "groupBox_4" );
-    $groupBox_4->setGeometry( Qt::Rect(10, 80, 241, 101) );
+    $groupBox_4->setGeometry( Qt::Rect(10, 50, 241, 131) );
     my $pushButtonPrepareLiveISO = Qt::PushButton( $groupBox_4 );
     $self->{pushButtonPrepareLiveISO} = $pushButtonPrepareLiveISO;
     $pushButtonPrepareLiveISO->setObjectName( "pushButtonPrepareLiveISO" );
     $pushButtonPrepareLiveISO->setEnabled( 0 );
-    $pushButtonPrepareLiveISO->setGeometry( Qt::Rect(10, 20, 101, 71) );
+    $pushButtonPrepareLiveISO->setGeometry( Qt::Rect(10, 60, 101, 61) );
     my $pushButtonBuildLiveISO = Qt::PushButton( $groupBox_4 );
     $self->{pushButtonBuildLiveISO} = $pushButtonBuildLiveISO;
     $pushButtonBuildLiveISO->setObjectName( "pushButtonBuildLiveISO" );
     $pushButtonBuildLiveISO->setEnabled( 0 );
-    $pushButtonBuildLiveISO->setGeometry( Qt::Rect(120, 20, 111, 71) );
+    $pushButtonBuildLiveISO->setGeometry( Qt::Rect(120, 60, 111, 61) );
+    my $pushButtonBuildRefresh = Qt::PushButton( $groupBox_4 );
+    $self->{pushButtonBuildRefresh} = $pushButtonBuildRefresh;
+    $pushButtonBuildRefresh->setObjectName( "pushButtonBuildRefresh" );
+    $pushButtonBuildRefresh->setGeometry( Qt::Rect(50, 20, 131, 27) );
     my $groupBox_5 = Qt::GroupBox( $tab_Build );
     $self->{groupBox_5} = $groupBox_5;
     $groupBox_5->setObjectName( "groupBox_5" );
@@ -565,9 +573,9 @@ sub retranslateUi {
     $self->{checkBoxCustomInstaller}->setText( Qt::Application::translate( 'DebrootForm', "Add custom disk installer to image", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{groupBox_4}->setTitle( Qt::Application::translate( 'DebrootForm', "Live ISO", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonPrepareLiveISO}->setText( Qt::Application::translate( 'DebrootForm', "Prepare\n" .
-"or update\n" .
 " ISO content", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonBuildLiveISO}->setText( Qt::Application::translate( 'DebrootForm', "Build ISO", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{pushButtonBuildRefresh}->setText( Qt::Application::translate( 'DebrootForm', "Refresh options", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{groupBox_5}->setTitle( Qt::Application::translate( 'DebrootForm', "USB image", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonBuildUSBIMG}->setText( Qt::Application::translate( 'DebrootForm', "Build USB IMG", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{lineEditBuildUSBUsername}->setText( '' );

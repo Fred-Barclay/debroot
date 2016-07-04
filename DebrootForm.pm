@@ -32,7 +32,8 @@ use QtCore4::slots
 	on_pushButtonPrepareLiveISO_clicked => [],
 	on_pushButtonBuildLiveISO_clicked => [],
 	on_pushButtonBackupROOTFS_clicked=> [],
-	on_tabWidget_currentChanged=>[];
+	on_pushButtonBuildRefresh_clicked=> [],
+	on_tabWidget_currentChanged=> [];
 # [1]
 
 # [0]
@@ -666,16 +667,30 @@ sub on_tabWidget_currentChanged {
 		# enable chroot backup button
 		this->{ui}->{pushButtonBackupROOTFS}->setEnabled(1);
 	}
+}
+# [1]
+
+# [1]
+sub on_pushButtonBuildRefresh_clicked {
+	my ( $value ) = @_;
+
+	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 
 	if ( -e "$dir-binary") {
-		# disable prepare ISO button
+		# disable prepare live iso button
 		this->{ui}->{pushButtonPrepareLiveISO}->setEnabled(0);
-		# enable build iso button
+		# enable build live iso button
 		this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
+	} else {
+		# enable prepare live iso button
+		this->{ui}->{pushButtonPrepareLiveISO}->setEnabled(1);
+		# disable build live iso button
+		this->{ui}->{pushButtonBuildLiveISO}->setEnabled(0);
 	}
 }
 # [1]
 
+# [1]
 
 ################################ Other functions
 # [1]
