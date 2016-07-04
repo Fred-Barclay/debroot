@@ -19,11 +19,11 @@ ATM the app does the following:
 
 # Bugs
 
-See TODO file.
-
 * To enable "Unsquash" button you may have to type and remove text in the "ROOTFS Directory" text input;
-* Some buttons are disabled because they are not implemeted yet. Its the case of "build USB image" and "chroot RDP" buttons.
+* Some buttons are disabled because they are not implemeted yet. It is the case of "build USB image" and "chroot RDP" buttons.
 * The produced ISO file is not UEFI compatible (see below).
+
+Also see TODO file.
 
 # ROADMAP
 
@@ -31,9 +31,31 @@ See TODO file.
 * add a custom script based installer to "replace" both ubiquity or debian-installer;
 * support UEFI boot.
 
-## Dependencies
+# Install
 
-### Runtime
+There are pre-built debian packages available at <https://sourceforge.net/projects/debroot/>.
+
+One can also build a debian package from sources with:
+
+	dpkg-buildpackage -us -uc
+
+## Install from debian package
+
+Install it with gdebi:
+
+	sudo gdebi -o "APT::Install-Recommends=0" debroot_0.03_all.deb -nq
+
+### Execute
+
+From an installed debian package:
+
+	sudo debroot.pl
+
+## Install from sources
+
+Unzip or git clone somewhere, then...
+
+### Runtime dependencies
 
 This is a perl QT app. To run it in debian/Ubuntu install:
 
@@ -45,17 +67,13 @@ From sources:
 
 	sudo ./debroot.pl
 
-From debian package:
-
-	sudo debroot.pl
-
-### Build time
+### Development time dependencies
 
 To develop install:
 
 	sudo apt-get install qt4-dev-tools
 
-To update the GUI after changes made in qt4-designer:
+To update the GUI perl module after changes made in qt4-designer type:
 
 	make
 
