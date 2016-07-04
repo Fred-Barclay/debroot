@@ -14,7 +14,8 @@ ATM the app does the following:
 * selects and unsqhashes an Debian or Ubuntu Live iso file (content of chroot may be upgraded, see bellow) and can rebuild it (without UEFI support for now);
 * chroot APT sources.list can be edited, "apt-get update/upgrade/dist-upgrade" are a button click away;
 * packages can be installed in the chroot by dropping their names in a textbox and clicking "Install";
-* can create a bare minbase debootstrap of Ubuntu or Debian, and from that, create a very small Live ISO, or else one can add new repositories, install packages and then build the Live iso image.
+* can create a bare minbase debootstrap of Ubuntu or Debian, and from that, create a very small Live ISO, or else one can add new repositories, install packages and then build the Live iso image;
+* generates a script with all the commands that were executed to replicate the process on another host without debroot.
 
 # Bugs
 
