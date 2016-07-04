@@ -28,7 +28,6 @@ See TODO file.
 
 # ROADMAP
 
-* debian packaging;
 * build non-live USB image;
 * add a custom script based installer to "replace" both ubiquity or debian-installer;
 * support UEFI boot.
@@ -41,6 +40,16 @@ This is a perl QT app. To run it in debian/Ubuntu install:
 
 	sudo apt-get install libqtgui4-perl
 
+### Execute
+
+From sources:
+
+	sudo ./debroot.pl
+
+From debian package:
+
+	sudo debroot.pl
+
 ### Build time
 
 To develop install:
@@ -50,10 +59,6 @@ To develop install:
 To update the GUI after changes made in qt4-designer:
 
 	make
-
-### Execute
-
-	sudo ./debroot.pl
 
 # How to
 
@@ -88,6 +93,7 @@ This app works with either ubuntu and debian and their derivatives. It was teste
 * Kali Linux 2016.1;
 * TAILS 2.4;
 * Sparkylinux 4.3;
+* Debtailor 2016-1;
 * In general this app should work with any live distro that uses either casper or debian-live.
 
 # Copyright
