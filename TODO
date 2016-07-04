@@ -1,15 +1,16 @@
 # TODO/FIXME
 #
+# FIXME: BUG: the "prepare iso" button should be available if $dir-binary does not exist and "build iso" should be disabled (it is).
+# FIXME: BUG: cleanup $dir/dev/{random,urandom,null} that were created so the directory is clean.
 # FIXME: BUG: the dpkg query call to generate manifest is not working.
+# IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
 # IMPROV: GUI: add a "apt clean" and a "apt autoremove --purge" buttons.
 # IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
-# IMPROV: debian packaging.
+# IMPROV: GUI: in install tab add a button to choose a script/hook to do automated stuff.
+# IMPROV: GUI: make "preseed" button work in "Install" tab.
+# IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
 # IMPROV: GUI: add a "Browse chroot" button in "Build" tab and run "xdg-open $dir" to browse/change files in $dir. Only available if $dir exists.
 # IMPROV: GUI: add a "Browse binary" button in "Build" tab and run "xdg-open $dir-binary" to browse/change files in $dir-binary. Only available if $dir-binary exists.
-# IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
-# IMPROV: GUI: add a checkbox to "bind mount" host /dev in chroot button, as a workaround for upgrades/dist-upgrades that fail without /dev (derivatives break some policies). Maybe add that to "Upgrade" tab too.
-# IMPROV: GUI: in install tab add a button to choose a script/hook to do automated stuff.
-# IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
 # IMPROV: GUI: run x apps from chroot with or without xnest: <https://help.ubuntu.com/community/BasicChroot> or <https://wiki.gentoo.org/wiki/Project:X86/Chroot_Guide#Running_X_apps_inside_the_chroot>.
 # FIXME: only happens with sudo; does not with gksudo:
 #Object::connect: No such signal QLineEdit::textChanged()
@@ -20,3 +21,5 @@
 # IMPROV: build a livecd with this program to create livecd of installed systems to another disk, like clonezilla/systemrescuecd/gparted.
 # FIXME: see <https://bugs.launchpad.net/ubuntu/+source/resolvconf/+bug/1279760>. It happens if one doesnt install network-manager in live image.
 # FIXME: xterm (no copy/paste?)
+# IMPROV: debian packaging lintians.
+# IMPROV: GUI: add a checkbox to "bind mount" host /dev in chroot button, as a workaround for upgrades/dist-upgrades that fail without /dev (derivatives break some policies). Maybe add that to "Upgrade" tab too.
