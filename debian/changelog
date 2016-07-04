@@ -1,3 +1,11 @@
+debroot (0.03) unstable; urgency=medium
+
+  * Add rebuilt file from last release.
+  * Fix: always build isohybrid images.
+  * When preparing the iso dont rely on what is selected but on what present is in chroot.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Mon, 04 Jul 2016 22:04:36 +0100
+
 debroot (0.02) unstable; urgency=medium
 
   * Add install rules to Makefile, so debian packaging works.
