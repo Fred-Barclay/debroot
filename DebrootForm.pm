@@ -471,16 +471,19 @@ sub on_pushButtonBuildLiveISO_clicked {
 	#	$command = "xorriso -as mkisofs -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso $dir-binary || read -p 'Error. Press any key.'";
 	#}
 	unlink "$dir.iso";
-	# if there is a isolinux/isohdpfx.bin file, build an iso-hybrid iso.
-	my $hybrid_options = "";
-	if ( -e "$dir-binary/isolinux/isohdpfx.bin" ) {
-		$hybrid_options = "-isohybrid-mbr isolinux/isohdpfx.bin";
-	} else {
-		print "./isolinux/isohdpfx.bin not found; building non isohybrid iso.\n";
-		print "To turn $dir.iso into a isohybrid iso run the command:\n";
-		print "isohybrid filename.iso\n";
+
+	# if there is no isolinux/isohdpfx.bin ( there isnt after unsquash)
+	# install it on host and copy it to $dir-binary/isolinux/.
+	if ( ! -e "$dir-binary/isolinux/isohdpfx.bin" ) {
+		if ( !( this->get_system_debian_release eq "wheezy" ) ) {
+			this->install_temp_pkg_system( "isolinux" );
+			this->run_system( "cp /usr/lib/ISOLINUX/isohdpfx.bin $dir-binary/isolinux/" );
+		} else {
+			this->install_temp_pkg_system( "syslinux-common" );
+			this->run_system( "cp /usr/lib/syslinux/isohdpfx.bin $dir-binary/isolinux/" );
+		}
 	}
-	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs $hybrid_options -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
+	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
 
 	this->remove_temp_pkg_system();
 	this->remove_temp_pkg_chroot( $dir );
@@ -973,6 +976,29 @@ sub get_chroot_initfile {
 	}
 
 	return $initfile;
+}
+# [1]
+
+# [1]
+sub get_system_debian_release {
+
+	# returns whatever original debian release this distro is based on
+	# wheezy, jessie, stretch, etc, even on ubuntu/tails/kali, etc.
+	my $debian_release = `dpkg --status tzdata|grep Provides|cut -f2 -d'-'`;
+	$debian_release =~ s/\n//g;
+	return $debian_release;
+}
+# [1]
+
+# [1]
+sub get_chroot_debian_release {
+	my ( $dir ) = @_;
+
+	# returns whatever original debian release this distro is based on
+	# wheezy, jessie, stretch, etc, even on ubuntu/tails/kali, etc.
+	my $debian_release = `chroot $dir /bin/su root -l -c 'export HOME=/root; export LC_ALL=C; dpkg --status tzdata|grep Provides|cut -f2 -d\'-\''`;
+	$debian_release =~ s/\n//g;
+	return $debian_release;
 }
 # [1]
 

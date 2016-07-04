@@ -23,7 +23,6 @@ See TODO file.
 
 * To enable "Unsquash" button you may have to type and remove text in the "ROOTFS Directory" text input;
 * Some buttons are disabled because they are not implemeted yet. Its the case of "build USB image" and "chroot RDP" buttons.
-* The produced ISO file is not isohybrid if one unsquashes an existing ISO. Easy fix: run "isohybrid file.iso".
 * The produced ISO file is not UEFI compatible (see below).
 
 # ROADMAP
