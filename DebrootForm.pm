@@ -934,7 +934,19 @@ sub release_chroot {
 	this->run_system( "umount -l $dir/dev/pts" );
 	this->run_system( "umount -l $dir/sys" );
 	this->run_system( "umount -l $dir/proc" );
-	this->run_system( "umount -l $dir/dev" );
+	#this->run_system( "umount -l $dir/dev" );
+	# Only remove created files if /dev was not mounted elsewhere
+	if ( `df -P /dev | tail -1 | cut -d' ' -f 1` eq "-" ) {
+		if ( -e "$dir/dev/random" ) {
+			this->run_system( "rm -f $dir/dev/random" );
+		}
+		if ( -e "$dir/dev/urandom" ) {
+			this->run_system( "rm -f $dir/dev/urandom" );
+		}
+		if ( -e "$dir/dev/null" ) {
+			this->run_system( "rm -f $dir/dev/null" );
+		}
+	}
 
 	unlink "$dir/etc/hosts";
 	unlink "$dir/etc/resolv.conf";

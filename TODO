@@ -1,7 +1,5 @@
 # TODO/FIXME
 #
-# FIXME: BUG: the "prepare iso" button should be available if $dir-binary does not exist and "build iso" should be disabled (it is).
-# FIXME: BUG: cleanup $dir/dev/{random,urandom,null} that were created so the directory is clean.
 # FIXME: BUG: the dpkg query call to generate manifest is not working.
 # IMPROV: GUI: sources.list help should be in a textbox, copy/pastable.
 # IMPROV: GUI: add a "apt clean" and a "apt autoremove --purge" buttons.
