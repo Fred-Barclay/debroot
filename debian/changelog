@@ -1,3 +1,12 @@
+debroot (0.04) unstable; urgency=medium
+
+  * Update README.md.
+  * Dont remove UI perl module on clean. It's in git.
+  * Fix paths of iso file if relative paths are used in ROOTFS directory 
+    textbox.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Tue, 05 Jul 2016 01:34:56 +0100
+
 debroot (0.03) unstable; urgency=medium
 
   * Add rebuilt file from last release.
