@@ -483,7 +483,13 @@ sub on_pushButtonBuildLiveISO_clicked {
 			this->run_system( "cp /usr/lib/syslinux/isohdpfx.bin $dir-binary/isolinux/" );
 		}
 	}
-	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dir.iso ." );
+	# if $dir is absolute path (starts with slash bar), use it,
+	# else output iso to parent directory.
+	my $isoname = "../" . "$dir" . ".iso";
+	if ( "$dir" =~ /^\//  ) {
+		$isoname = "$dir" . ".iso";
+	}
+	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $isoname ." );
 
 	this->remove_temp_pkg_system();
 	this->remove_temp_pkg_chroot( $dir );
