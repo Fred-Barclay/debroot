@@ -1,3 +1,9 @@
+debroot (0.06) unstable; urgency=medium
+
+  * Fix path to grub file when not running from sources.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Thu, 07 Jul 2016 18:18:22 +0100
+
 debroot (0.05) unstable; urgency=medium
 
   * Support 64 bit UEFI live boot for created and rebuilt images.
