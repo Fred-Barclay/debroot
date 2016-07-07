@@ -1236,6 +1236,9 @@ sub create_efiboot_unsigned {
 	}
 	# the existing files where grabbed from ubuntu gnome desktop iso and renamed to grubx64.efi and grubia32.efi.
 	#this->grab_grub_efi_file( $dir, $livedir, $grub_file );
+	if ( -e "/usr/share/perl5/$grub_file" ) {
+		$grub_file = "/usr/share/perl5/$grub_file";
+	}
 	this->run_system_terminal( "cp $grub_file $dir-temp/EFI/BOOT/loader.efi" );		
 	# should check md5sum of downloads
 	this->run_system_terminal( "wget http://blog.hansenpartnership.com/wp-uploads/2013/PreLoader.efi" );
