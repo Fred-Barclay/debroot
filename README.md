@@ -21,7 +21,6 @@ ATM the app does the following:
 
 * To enable "Unsquash" button you may have to type and remove text in the "ROOTFS Directory" text input;
 * Some buttons are disabled because they are not implemeted yet. It is the case of "build USB image" and "chroot RDP" buttons.
-* The produced ISO file is not UEFI compatible (see below).
 
 Also see TODO file.
 
@@ -29,7 +28,6 @@ Also see TODO file.
 
 * build non-live USB image;
 * add a custom script based installer to "replace" both ubiquity or debian-installer;
-* support UEFI boot.
 
 # Install
 
@@ -100,6 +98,18 @@ To update the GUI perl module after changes made in qt4-designer type:
 * After installing or upgrading the system, click the tab "Chroot" and then click the button "Chroot Shell";
 * In the shell type "apt-get autoremove --purge" and "apt-get clean" to reduce the size of the resulting live image. Type "exit" to return to the app;
 * Now click the "Build" tab and the button "Build ISO" should be available. Click it.
+
+## Rebuild non-UEFI Debian live images with UEFI support
+
+This is a workaround for Debian 7 Wheezy and 8 Jessie and testing/Stretch, while [bug #820036](http://bugs.debian.org/820036) is not fixed for Debian 9 Stretch. It is only supported for 64 bit systems.
+
+More info about this UEFI workaround see [James Bottomley blog](http://blog.hansenpartnership.com/linux-foundation-secure-boot-system-released/) about it.
+
+* Type the directory where the ISO chroot content will be extrated in "ROOTFS directory";
+* Click the "Unsquash" tab, click "Select ISO" button to select an existing ISO;
+* After the file is selected the button "Unsquash" should now be available. If not add and remove text in the "ROOTFS directory" to update the UI interface (its a bug);
+* Click the "Unsquash" button and wait;
+* Now click the "Build" tab and the button "Build ISO" should be available. Click it without unchecking the checkbox "UEFI enabled".
 
 # Tested distros (Unsquash/upgrade/rebuild)
 

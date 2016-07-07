@@ -46,8 +46,8 @@ sub NEW {
 	this->{ui}->{radioButtonDebian}->setAutoExclusive('true');
 	this->{ui}->{radioButtonDebian}->setChecked('true');
 	# add possible debootstrap architectures
-	my $sysarch = `dpkg --print-architecture`;
-	if ( "$sysarch" eq "amd64\n" ) {
+	my $sysarch = this->get_system_arch();
+	if ( "$sysarch" eq "amd64" ) {
 		#this->{ui}->{comboBoxArch}->insertItem(0,'amd64');
 		this->{ui}->{comboBoxArch}->addItem('amd64');
 	}
@@ -156,6 +156,10 @@ sub on_pushButtonUnsquash_clicked {
 
 	this->run_system( "umount $dir-iso" );
 	this->run_system( "rmdir $dir-iso" );
+
+	# extract original isohybrid boot header from iso (no need to install
+	# isolinux, and even isolinux cant be from same syslinux version).
+	this->run_system( "dd if=$iso bs=512 count=1 of=$dir-binary/isolinux/isohdpfx.bin" );
 
 	# enable build live iso button
 	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
@@ -393,9 +397,9 @@ sub on_pushButtonBuildLiveISO_clicked {
 		# reinstall kernel
 		my $kernel = `ls $dir/vmlinuz -la | cut -d'>' -f 2`;
 		$kernel =~ s/ boot\/vmlinuz-//;
-		$kernel =~ s/\n/ /g;
+		$kernel =~ s/\n//g;
 		if ( "$livedir" eq "casper" ) {
-			$kernel = "linux-image-" . $kernel . "linux-signed-image-" . $kernel;
+			$kernel = "linux-image-" . $kernel . " linux-signed-image-" . $kernel;
 		} else {
 			$kernel = "linux-image-" . $kernel;
 		}
@@ -403,14 +407,17 @@ sub on_pushButtonBuildLiveISO_clicked {
 		## run apt-get clean in chroot
 		this->run_chroot( $dir, "apt-get clean" );
 	}
-	this->run_system( " rm -f $dir-binary/$livedir/vmlinuz.efi $dir-binary/$livedir/vmlinuz $dir-binary/$livedir/initrd.img $dir-binary/$livedir/initrd.lz" );
+	this->run_system( "rm -f $dir-binary/$livedir/vmlinuz.efi $dir-binary/$livedir/vmlinuz $dir-binary/$livedir/initrd.img $dir-binary/$livedir/initrd.lz" );
+	if ( this->{ui}->{checkBoxUEFI}->isChecked() ) {
+		this->run_system( "rm -f $dir-binary/boot/grub/*.img" );
+	}
 	# only select the latest kernel available because after
 	# a dist-upgrade the previous kernel may still be present.
 	this->run_system( "cp $dir/boot/vmlinuz-* $dir-binary/$livedir/" );
 	my $latest_vmlinuz_img = `cd $dir-binary/$livedir/ && ls -1 vmlinuz-* | grep -v efi | tail -n 1`;
 	my $latest_vmlinuz_efi = `cd $dir-binary/$livedir/ && ls -1 vmlinuz-*.efi.* | tail -n 1`;
-	$latest_vmlinuz_img =~ s/\n/ /g;
-	$latest_vmlinuz_efi =~ s/\n/ /g;
+	$latest_vmlinuz_img =~ s/\n//g;
+	$latest_vmlinuz_efi =~ s/\n//g;
 	this->run_system_terminal( "cp $dir-binary/$livedir/$latest_vmlinuz_img $dir-binary/$livedir/vmlinuz" );
 	if ( ! "$latest_vmlinuz_efi" eq "" ) {
 		this->run_system( "cp $dir-binary/$livedir/$latest_vmlinuz_efi $dir-binary/$livedir/vmlinuz.efi" );
@@ -419,7 +426,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 
 	this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/" );
 	my $latest_initrd_img = `cd $dir-binary/$livedir/ && ls -1 initrd.img* | grep -v efi | tail -n 1`;
-	$latest_initrd_img =~ s/\n/ /g;
+	$latest_initrd_img =~ s/\n//g;
 	if ( "$livedir" eq "casper" ) {
 		# in ubuntu
 		this->install_temp_pkg_system( "lzma" );
@@ -489,10 +496,30 @@ sub on_pushButtonBuildLiveISO_clicked {
 	if ( "$dir" =~ /^\//  ) {
 		$isoname = "$dir" . ".iso";
 	}
-	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $isoname ." );
-
-	this->remove_temp_pkg_system();
+	# if there is $dir-binary/boot/grub/efi.img (ubuntu)
+	my $efiboot_options = "";
+	if ( this->{ui}->{checkBoxUEFI}->isChecked() ) {
+		if ( ! -e "$dir-binary/boot/grub/efi.img" ) {
+			# create one and boot without signed kernel
+			my $arch = this->get_chroot_arch( $dir );
+			my $efi_file = "";
+			my $grub_file = "";
+			if ( "$arch" eq "amd64" ) {
+				$efi_file = "BOOTX64.EFI";
+				$grub_file = "grubx64.efi";
+			} else {
+				$efi_file = "BOOTIA32.EFI";
+				$grub_file = "grubia32.efi";			
+			}
+			this->create_efiboot_unsigned( $dir, $efi_file, $grub_file, $livedir);
+			$efiboot_options = "-eltorito-alt-boot --efi-boot boot/grub/efi.img -isohybrid-gpt-basdat";
+		}
+	}
+	# move out isohdpfx.bin from binary directory
+	this->run_system( "cp $dir-binary/isolinux/isohdpfx.bin /tmp/" );
+	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr /tmp/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $efiboot_options -o $isoname ." );
 	this->remove_temp_pkg_chroot( $dir );
+	this->remove_temp_pkg_system();
 
 }
 # [1]
@@ -548,7 +575,7 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	#### install syslinux-theme-ubuntu and gfxboot-theme-ubuntu to have boot options
 	my $syslinux_theme = undef;
 	if ( !( "$release" eq "jessie" ) ) {
-		$syslinux_theme = "syslinux-themes-$distro";
+		$syslinux_theme = "$distro" eq "debian" ? "syslinux-themes-$distro" : "";
 	} else {
 		this->fix_syslinux_theme_jessie( $dir );
 		$syslinux_theme = "";
@@ -609,7 +636,7 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	if ( "$distro" eq "ubuntu" ) {
 		$live_packages = "casper lupin-casper";
 		if (!glob("$dir/boot/vmlinuz-*")) {
-			$linux_packages = "linux-image-generic";
+			$linux_packages = "linux-image-generic linux-signed-image-generic";
 		}
 		if (!glob("$dir/usr/share/doc/plymouth-theme-*" )) {
 			# install at least one plymouth theme, needed for integrity check
@@ -618,8 +645,8 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	} else {
 		$live_packages = "live-boot live-config live-tools sudo user-setup";
 		if (!glob("$dir/boot/vmlinuz-*" )) {
-			my $arch = `chroot $dir dpkg --print-architecture`;
-			if ( "$arch" eq "amd64\n" ) {
+			my $arch = this->get_chroot_arch( $dir );
+			if ( "$arch" eq "amd64" ) {
 				$linux_packages = "linux-image-amd64";
 			} else {
 				$linux_packages = "linux-image-686";
@@ -712,6 +739,24 @@ sub on_pushButtonBuildRefresh_clicked {
 		this->{ui}->{pushButtonPrepareLiveISO}->setEnabled(1);
 		# disable build live iso button
 		this->{ui}->{pushButtonBuildLiveISO}->setEnabled(0);
+	}
+	
+	# Only support 64 bit UEFI
+	if ( this->get_system_arch() eq "amd64" ) {
+		if ( this->get_chroot_arch( $dir) eq "amd64" ) {
+			# enable and chek UEFI checkbox
+			this->{ui}->{checkBoxUEFI}->setEnabled(1);
+			this->{ui}->{checkBoxUEFI}->setChecked(1);
+		} else {
+			Qt::MessageBox::information(this,
+				this->tr('debroot does not support UEFI for 32 bit'),
+				this->tr('debroot only creates UEFI images for 64 bit target systems.'));
+
+		}
+	} else {
+		Qt::MessageBox::information(this,
+			this->tr('debroot does not support UEFI in 32 bit host'),
+			this->tr('debroot only creates UEFI images in 64 bit hosts for 64 bit target systems.'));
 	}
 }
 # [1]
@@ -1143,5 +1188,197 @@ sub run_chroot_terminal {
 	return $exit_code;
 }
 # [1]
+
+# [1]
+sub get_system_arch {
+	my $arch = `dpkg --print-architecture`;
+	$arch =~ s/\n//g;
+	
+	return $arch;
+}
+# [1]
+
+# [1]
+sub get_chroot_arch {
+	my $dir = shift;
+
+	my $arch = `chroot $dir dpkg --print-architecture`;
+	$arch =~ s/\n//g;
+	
+	return $arch;
+}
+# [1]
+
+# [1]
+sub create_efiboot_unsigned {
+	my $dir = shift;
+	my $efi_file = shift;
+	my $grub_file = shift;
+	my $livedir = shift;
+
+	this->run_system( "mkdir -p $dir-binary/boot/grub/ $dir-temp" );
+	this->run_system_terminal( "dd if=/dev/zero of=$dir-binary/boot/grub/efi.img bs=1024 count=2368" );
+	this->run_system_terminal( "mkfs.fat $dir-binary/boot/grub/efi.img" );
+	this->run_system_terminal( "mount $dir-binary/boot/grub/efi.img $dir-temp" );
+	this->run_system( "mkdir -p $dir-temp/EFI/BOOT" );
+	# is it really necessary?
+	#this->install_temp_pkg_chroot( $dir, "grub-efi" );
+	#this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; update-grub" );
+	# TODO/FIXME: add a grub.cfg and a loopback.cfg to boot live
+	if ( ( ! -e "$dir-binary/boot/grub/grub.cfg" ) || ( ! -e "$dir-binary/boot/grub/loopback.cfg" ) ) {
+		this->create_live_grub_cfg($dir, $livedir);
+	}
+	# the existing files where grabbed from ubuntu gnome desktop iso and renamed to grubx64.efi and grubia32.efi.
+	#this->grab_grub_efi_file( $dir, $livedir, $grub_file );
+	this->run_system_terminal( "cp $grub_file $dir-temp/EFI/BOOT/loader.efi" );		
+	# should check md5sum of downloads
+	this->run_system_terminal( "wget http://blog.hansenpartnership.com/wp-uploads/2013/PreLoader.efi" );
+	this->run_system_terminal( "wget http://blog.hansenpartnership.com/wp-uploads/2013/HashTool.efi" );
+	# do as explained in <http://forums.debian.net/viewtopic.php?f=20&t=127380#p609579>
+	this->run_system( "mv HashTool.efi $dir-temp/EFI/BOOT/" );
+	this->run_system( "mv PreLoader.efi $dir-temp/EFI/BOOT/$efi_file" );
+	this->run_system( "umount $dir-temp" );
+	this->run_system( "rmdir $dir-temp" );
+}
+# [1]
+
+# [1]
+sub create_live_grub_cfg {
+	my $dir = shift;
+	my $livedir = shift;
+
+	my $grub_cfg_content = 'if loadfont /boot/grub/font.pf2 ; then
+	set gfxmode=auto
+	insmod efi_gop
+	insmod efi_uga
+	insmod gfxterm
+	terminal_output gfxterm
+fi
+
+set menu_color_normal=white/black
+set menu_color_highlight=black/light-gray
+
+menuentry "Try @DISTRO@ without installing" {
+	set gfxpayload=keep
+	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ quiet splash ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+menuentry "Install @DISTRO@" {
+	set gfxpayload=keep
+	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ only-ubiquity quiet splash ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+menuentry "OEM install (for manufacturers)" {
+	set gfxpayload=keep
+	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ only-ubiquity quiet splash oem-config/enable=true ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+menuentry "Check disc for defects" {
+	set gfxpayload=keep
+	linux	/@LIVEDIR@/@VMLINUZ@  boot=@LIVEDIR@ integrity-check quiet splash ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+';
+
+	my $loopback_cfg_content = 'menuentry "Try @DISTRO@ without installing" {
+	set gfxpayload=keep
+	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ iso-scan/filename=${iso_path} quiet splash ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+menuentry "Install @DISTRO@" {
+	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ only-ubiquity iso-scan/filename=${iso_path} quiet splash ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+menuentry "Check disc for defects" {
+	linux	/@LIVEDIR@/@VMLINUZ@  boot=@LIVEDIR@ integrity-check iso-scan/filename=${iso_path} quiet splash ---
+	initrd	/@LIVEDIR@/@INITRD@
+}
+menuentry "Test memory" {
+	linux16	/install/mt86plus
+}
+';
+
+	my $distro = "";
+	my $vmlinuz = "";
+	my $initrd = "";
+
+	if ( "$livedir" eq "casper" ) {
+		$distro = "ubuntu";
+		$vmlinuz = "vmlinuz.efi";
+		$initrd = "initrd.lz";
+	} else {
+		$distro = "debian";
+		$vmlinuz = "vmlinuz";
+		$initrd = "initrd.img";
+	}
+
+	if ( -e "$dir/etc/os-release" ) {
+		$distro = `grep ^ID= $dir/etc/os-release`;
+		$distro =~ s/^ID=//g;
+		$distro =~ s/\n//g;
+	}
+
+	$grub_cfg_content =~ s/\@DISTRO\@/$distro/g;
+	$grub_cfg_content =~ s/\@LIVEDIR\@/$livedir/g;
+	$grub_cfg_content =~ s/\@VMLINUZ\@/$vmlinuz/g;
+	$grub_cfg_content =~ s/\@INITRD\@/$initrd/g;
+
+	$loopback_cfg_content =~ s/\@DISTRO\@/$distro/g;
+	$loopback_cfg_content =~ s/\@LIVEDIR\@/$livedir/g;
+	$loopback_cfg_content =~ s/\@VMLINUZ\@/$vmlinuz/g;
+	$loopback_cfg_content =~ s/\@INITRD\@/$initrd/g;
+
+	# live-config needs explicit "config" boot option to be used
+	if ( "$livedir" eq "live" ) {
+		$grub_cfg_content =~ s/boot=live/boot=live config/g;
+		$loopback_cfg_content =~ s/boot=live/boot=live config/g;
+	}
+	# write files
+	this->run_system( "cat > $dir-binary/boot/grub/grub.cfg << 'EOF'\n$grub_cfg_content" );
+	this->run_system( "cat > $dir-binary/boot/grub/loopback.cfg << 'EOF'\n$loopback_cfg_content" );
+}
+# [1]
+
+sub grab_grub_efi_file {
+	my $dir = shift;
+	my $livedir = shift;
+	my $grub_file = shift;
+
+	# FIXME: how to get /boot/efi/EFI/debian/grubx64.efi in a chroot?
+	#this->run_system_terminal( "cp $dir/boot/efi/EFI/debian/$grub_file $dir-temp/EFI/BOOT/loader.efi" );		
+	# hack: TODO download mini.iso from ubuntu/debian and extract grubia32.efi/grubx64.efi
+
+	this->run_system( "mkdir -p $dir-temp2 $dir-temp3" );
+
+	my $distro = "";
+	my $release = "";
+	my $url = "";
+	my $arch = "";
+
+	if ( "$livedir" eq "casper" ) {
+		$distro = "ubuntu";
+		$release = this->get_chroot_debian_release( $dir );
+		$release = $release eq "stretch" ? "xenial" : "trusty";
+		$url = "http://archive.ubuntu.com/ubuntu";
+	} else {
+		$distro = "debian";
+		$release = this->get_chroot_debian_release( $dir );
+		$url = "http://ftp.debian.org/debian";
+	}
+
+	$arch = this->get_chroot_arch( $dir );
+
+	this->run_system_terminal( "wget $url/dists/$release/main/installer-$arch/current/images/netboot/mini.iso" );
+	this->run_system( "mount mini.iso $dir-temp2" );
+	this->run_system( "mount $dir-temp2/boot/grub/efi.img $dir-temp3" );
+	this->run_system( "echo WTH, no grubx64.efi in mini.iso!\n" );
+	this->run_system( "umount $dir-temp3" );
+	this->run_system( "umount $dir-temp2" );
+
+	this->run_system( "rmdir -p $dir-temp2 $dir-temp3" );
+	this->run_system( "rm mini.iso" );
+	
+	#this->run_system_terminal( "cp $grub_file $dir-temp/EFI/BOOT/loader.efi" );		
+}
 
 1;
