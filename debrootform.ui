@@ -574,8 +574,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>20</y>
+       <x>260</x>
+       <y>30</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -590,8 +590,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>40</y>
+       <x>260</x>
+       <y>50</y>
        <width>251</width>
        <height>20</height>
       </rect>
@@ -751,6 +751,22 @@
        <string>Backup</string>
       </property>
      </widget>
+    </widget>
+    <widget class="QCheckBox" name="checkBoxIsoHybrid">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>10</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ISO hybrid image (CD/DVD/USB)</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </widget>
   </widget>

@@ -481,13 +481,16 @@ sub on_pushButtonBuildLiveISO_clicked {
 
 	# if there is no isolinux/isohdpfx.bin ( there isnt after unsquash)
 	# install it on host and copy it to $dir-binary/isolinux/.
-	if ( ! -e "$dir-binary/isolinux/isohdpfx.bin" ) {
-		if ( !( this->get_system_debian_release eq "wheezy" ) ) {
-			this->install_temp_pkg_system( "isolinux" );
-			this->run_system( "cp /usr/lib/ISOLINUX/isohdpfx.bin $dir-binary/isolinux/" );
-		} else {
-			this->install_temp_pkg_system( "syslinux-common" );
-			this->run_system( "cp /usr/lib/syslinux/isohdpfx.bin $dir-binary/isolinux/" );
+	my $isohybrid_options = "";
+	if ( this->{ui}->{checkBoxIsoHybrid}->isChecked() ) {
+		if ( ! -e "$dir-binary/isolinux/isohdpfx.bin" ) {
+			if ( !( this->get_system_debian_release eq "wheezy" ) ) {
+				this->install_temp_pkg_system( "isolinux" );
+				this->run_system( "cp /usr/lib/ISOLINUX/isohdpfx.bin $dir-binary/isolinux/" );
+			} else {
+				this->install_temp_pkg_system( "syslinux-common" );
+				this->run_system( "cp /usr/lib/syslinux/isohdpfx.bin $dir-binary/isolinux/" );
+			}
 		}
 	}
 	# if $dir is absolute path (starts with slash bar), use it,
@@ -515,9 +518,12 @@ sub on_pushButtonBuildLiveISO_clicked {
 			$efiboot_options = "-eltorito-alt-boot --efi-boot boot/grub/efi.img -isohybrid-gpt-basdat";
 		}
 	}
-	# move out isohdpfx.bin from binary directory
-	this->run_system( "cp $dir-binary/isolinux/isohdpfx.bin /tmp/" );
-	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs -isohybrid-mbr /tmp/isohdpfx.bin -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $efiboot_options -o $isoname ." );
+	if ( this->{ui}->{checkBoxIsoHybrid}->isChecked() ) {
+		# move out isohdpfx.bin from binary directory
+		this->run_system( "cp $dir-binary/isolinux/isohdpfx.bin /tmp/" );
+		$isohybrid_options = "-isohybrid-mbr /tmp/isohdpfx.bin";
+	}
+	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs $isohybrid_options -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $efiboot_options -o $isoname ." );
 	this->remove_temp_pkg_chroot( $dir );
 	this->remove_temp_pkg_system();
 

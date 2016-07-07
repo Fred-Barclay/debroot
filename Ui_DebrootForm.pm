@@ -5,7 +5,7 @@
 #################################################################################
 ## Form generated from reading UI file 'debrootform.ui'
 ##
-## Created: seg Jul 4 17:34:57 2016
+## Created: qui Jul 7 17:12:13 2016
 ##      by: Qt User Interface Compiler version 4.8.6
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -242,6 +242,10 @@ sub pushButtonBackupROOTFS {
     return shift->{pushButtonBackupROOTFS};
 }
 
+sub checkBoxIsoHybrid {
+    return shift->{checkBoxIsoHybrid};
+}
+
 sub label {
     return shift->{label};
 }
@@ -457,12 +461,12 @@ sub setupUi {
     $self->{checkBoxUEFI} = $checkBoxUEFI;
     $checkBoxUEFI->setObjectName( "checkBoxUEFI" );
     $checkBoxUEFI->setEnabled( 0 );
-    $checkBoxUEFI->setGeometry( Qt::Rect(270, 20, 131, 20) );
+    $checkBoxUEFI->setGeometry( Qt::Rect(260, 30, 131, 20) );
     my $checkBoxCustomInstaller = Qt::CheckBox( $tab_Build );
     $self->{checkBoxCustomInstaller} = $checkBoxCustomInstaller;
     $checkBoxCustomInstaller->setObjectName( "checkBoxCustomInstaller" );
     $checkBoxCustomInstaller->setEnabled( 0 );
-    $checkBoxCustomInstaller->setGeometry( Qt::Rect(270, 40, 251, 20) );
+    $checkBoxCustomInstaller->setGeometry( Qt::Rect(260, 50, 251, 20) );
     my $groupBox_4 = Qt::GroupBox( $tab_Build );
     $self->{groupBox_4} = $groupBox_4;
     $groupBox_4->setObjectName( "groupBox_4" );
@@ -508,6 +512,11 @@ sub setupUi {
     $pushButtonBackupROOTFS->setObjectName( "pushButtonBackupROOTFS" );
     $pushButtonBackupROOTFS->setEnabled( 0 );
     $pushButtonBackupROOTFS->setGeometry( Qt::Rect(10, 40, 92, 27) );
+    my $checkBoxIsoHybrid = Qt::CheckBox( $tab_Build );
+    $self->{checkBoxIsoHybrid} = $checkBoxIsoHybrid;
+    $checkBoxIsoHybrid->setObjectName( "checkBoxIsoHybrid" );
+    $checkBoxIsoHybrid->setGeometry( Qt::Rect(260, 10, 241, 20) );
+    $checkBoxIsoHybrid->setChecked( 1 );
     $tabWidget->addTab( $tab_Build, Qt::Application::translate( 'DebrootForm', "Build", undef, Qt::Application::UnicodeUTF8() ) );
     my $label = Qt::Label( $debrootForm );
     $self->{label} = $label;
@@ -584,6 +593,7 @@ sub retranslateUi {
     $self->{groupBox_6}->setTitle( Qt::Application::translate( 'DebrootForm', "Chroot", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonBackupROOTFS}->setToolTip( Qt::Application::translate( 'DebrootForm', "Backup ROOTFS directory to a .tar.gz file for future use.", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{pushButtonBackupROOTFS}->setText( Qt::Application::translate( 'DebrootForm', "Backup", undef, Qt::Application::UnicodeUTF8() ) );
+    $self->{checkBoxIsoHybrid}->setText( Qt::Application::translate( 'DebrootForm', "ISO hybrid image (CD/DVD/USB)", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{tabWidget}->setTabText( $self->{tabWidget}->indexOf( $self->{tab_Build}), Qt::Application::translate( 'DebrootForm', "Build", undef, Qt::Application::UnicodeUTF8() ) );
     $self->{label}->setText( Qt::Application::translate( 'DebrootForm', "ROOTFS Directory:", undef, Qt::Application::UnicodeUTF8() ) );
 } # retranslateUi
