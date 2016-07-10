@@ -1,3 +1,13 @@
+debroot (0.07) unstable; urgency=medium
+
+  * Fix and update README.md.
+  * Remove backports from Ubuntu recommended sources.list file.
+  * When running apt-get update try to do it faster.
+  * Fix syslinux-themes-ubuntu package selection.
+  * Use correct iso check option on uefi grub configuration.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Sun, 10 Jul 2016 06:35:53 +0100
+
 debroot (0.06) unstable; urgency=medium
 
   * Fix path to grub file when not running from sources.
