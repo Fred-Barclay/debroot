@@ -308,10 +308,10 @@ deb-src http://archive.ubuntu.com/ubuntu/ $release main restricted universe mult
 ###### Ubuntu Update Repos\n
 deb http://archive.ubuntu.com/ubuntu/ $release-security main restricted universe multiverse\n
 deb http://archive.ubuntu.com/ubuntu/ $release-updates main restricted universe multiverse\n
-deb http://archive.ubuntu.com/ubuntu/ $release-backports main restricted universe multiverse\n
+#deb http://archive.ubuntu.com/ubuntu/ $release-backports main restricted universe multiverse\n
 deb-src http://archive.ubuntu.com/ubuntu/ $release-security main restricted universe multiverse\n
 deb-src http://archive.ubuntu.com/ubuntu/ $release-updates main restricted universe multiverse\n
-deb-src http://archive.ubuntu.com/ubuntu/ $release-backports main restricted universe multiverse\n
+#deb-src http://archive.ubuntu.com/ubuntu/ $release-backports main restricted universe multiverse\n
 \n";
 	}
 	# make messagebox text selectable and copy/paste work
