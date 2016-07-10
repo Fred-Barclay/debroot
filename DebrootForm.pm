@@ -255,7 +255,7 @@ sub on_pushButtonUpdate_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 
-	this->run_chroot_terminal( $dir, "apt-get update" );
+	this->run_chroot_terminal( $dir, "apt-get update -o Acquire::PDiffs=false -o Acquire::Languages=false" );
 }
 # [1]
 
@@ -1115,14 +1115,14 @@ sub fix_syslinux_theme_jessie {
 	#this->prepare_chroot( $dir );
 
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
-	this->run_chroot_terminal( $dir, "apt-get update" );
+	this->run_chroot_terminal( $dir, "apt-get update -o Acquire::PDiffs=false -o Acquire::Languages=false" );
 
 	this->run_chroot_terminal( $dir, "export DEBIAN_FRONTEND=noninteractive; apt-get install syslinux-themes-debian --no-install-recommends" );
 
 	this->run_system( "mv /tmp/sources.list $dir/etc/apt/sources.list" );
 
 	this->run_system( "rm -rf $dir/var/lib/apt/lists/*" );
-	this->run_chroot_terminal( $dir, "apt-get update" );
+	this->run_chroot_terminal( $dir, "apt-get update -o Acquire::PDiffs=false -o Acquire::Languages=false" );
 
 	#this->release_chroot( $dir );
 
