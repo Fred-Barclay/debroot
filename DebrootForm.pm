@@ -1284,7 +1284,7 @@ menuentry "OEM install (for manufacturers)" {
 }
 menuentry "Check disc for defects" {
 	set gfxpayload=keep
-	linux	/@LIVEDIR@/@VMLINUZ@  boot=@LIVEDIR@ integrity-check quiet splash ---
+	linux	/@LIVEDIR@/@VMLINUZ@  boot=@LIVEDIR@ @CHECK@ quiet splash ---
 	initrd	/@LIVEDIR@/@INITRD@
 }
 ';
@@ -1299,7 +1299,7 @@ menuentry "Install @DISTRO@" {
 	initrd	/@LIVEDIR@/@INITRD@
 }
 menuentry "Check disc for defects" {
-	linux	/@LIVEDIR@/@VMLINUZ@  boot=@LIVEDIR@ integrity-check iso-scan/filename=${iso_path} quiet splash ---
+	linux	/@LIVEDIR@/@VMLINUZ@  boot=@LIVEDIR@ @CHECK@ iso-scan/filename=${iso_path} quiet splash ---
 	initrd	/@LIVEDIR@/@INITRD@
 }
 menuentry "Test memory" {
@@ -1310,15 +1310,18 @@ menuentry "Test memory" {
 	my $distro = "";
 	my $vmlinuz = "";
 	my $initrd = "";
+	my $check = "";
 
 	if ( "$livedir" eq "casper" ) {
 		$distro = "ubuntu";
 		$vmlinuz = "vmlinuz.efi";
 		$initrd = "initrd.lz";
+		$check = "integrity-check";
 	} else {
 		$distro = "debian";
 		$vmlinuz = "vmlinuz";
 		$initrd = "initrd.img";
+		$check = "verify-checksums live-media-path=\/live";
 	}
 
 	if ( -e "$dir/etc/os-release" ) {
@@ -1331,11 +1334,13 @@ menuentry "Test memory" {
 	$grub_cfg_content =~ s/\@LIVEDIR\@/$livedir/g;
 	$grub_cfg_content =~ s/\@VMLINUZ\@/$vmlinuz/g;
 	$grub_cfg_content =~ s/\@INITRD\@/$initrd/g;
+	$grub_cfg_content =~ s/\@CHECK\@/$check/g;
 
 	$loopback_cfg_content =~ s/\@DISTRO\@/$distro/g;
 	$loopback_cfg_content =~ s/\@LIVEDIR\@/$livedir/g;
 	$loopback_cfg_content =~ s/\@VMLINUZ\@/$vmlinuz/g;
 	$loopback_cfg_content =~ s/\@INITRD\@/$initrd/g;
+	$loopback_cfg_content =~ s/\@CHECK\@/$check/g;
 
 	# live-config needs explicit "config" boot option to be used
 	if ( "$livedir" eq "live" ) {
