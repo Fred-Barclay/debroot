@@ -581,7 +581,7 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	#### install syslinux-theme-ubuntu and gfxboot-theme-ubuntu to have boot options
 	my $syslinux_theme = undef;
 	if ( !( "$release" eq "jessie" ) ) {
-		$syslinux_theme = "$distro" eq "debian" ? "syslinux-themes-$distro" : "";
+		$syslinux_theme = "syslinux-themes-$distro";
 	} else {
 		this->fix_syslinux_theme_jessie( $dir );
 		$syslinux_theme = "";
