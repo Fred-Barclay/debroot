@@ -1,3 +1,11 @@
+debroot (0.08) unstable; urgency=medium
+
+  * Fix dpkg query to generate manifest of the live iso, in both ubuntu 
+    and debian.
+  * Add a grub entry for debian live-installer with preseed from UEFI boot.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Mon, 18 Jul 2016 07:23:46 +0100
+
 debroot (0.07) unstable; urgency=medium
 
   * Fix and update README.md.
