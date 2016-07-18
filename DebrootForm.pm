@@ -439,18 +439,8 @@ sub on_pushButtonBuildLiveISO_clicked {
 
 	print "livedir: $livedir\n";
 
+	this->rebuild_manifest( $dir, $livedir );
 	if ( "$livedir" eq "casper" ) {
-		# regenerate manifest
-		$command = "chroot $dir dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest";
-		system ( $command );	# cant use run_chroot() because of quotes?
-		# append to build script manally
-		system( "echo $command >> $dir-builds-script.sh" );
-
-		#this->run_chroot ( $dir, "dpkg-query -W --showformat='\${Package} \${Version}\n' > $dir/tmp/filesystem.manifest" );
-		this->run_system( "mv $dir/tmp/filesystem.manifest $dir-binary/$livedir/" );
-		this->run_system( "cp $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.manifest-desktop" );
-		this->run_system( "sed -i '/ubiquity/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
-		this->run_system( "sed -i '/casper/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
 		# rebuild gfxboot
 		this->rebuild_gfxboot( "$dir-binary/isolinux/" );
 
@@ -1394,5 +1384,36 @@ sub grab_grub_efi_file {
 	
 	#this->run_system_terminal( "cp $grub_file $dir-temp/EFI/BOOT/loader.efi" );		
 }
+# [1]
+
+# [1]
+sub rebuild_manifest {
+	my $dir = shift;
+	my $livedir = shift;
+
+	# regenerate manifest
+
+	# create script to avoid escaping single quotes
+	# (they are eaten in a function call and must be escaped and \n is messing)
+	my $file = '#/bin/sh
+dpkg-query -W --showformat=\'${Package} ${Version}\n\' > /tmp/filesystem.manifest
+';
+	this->run_system( "cat > dpkg-query-call << 'EOF'\n$file" );
+	this->run_system( "mv dpkg-query-call $dir/root" );
+	this->run_chroot_terminal( $dir, 'sh ./dpkg-query-call' );
+	this->run_system( "rm -f $dir/root/dpkg-query-call" );
+	this->run_system( "mv $dir/tmp/filesystem.manifest $dir-binary/$livedir/" );
+	if ( "$livedir" eq "casper" ) {
+		this->run_system( "cp $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.manifest-desktop" );
+		this->run_system( "sed -i '/ubiquity/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
+		this->run_system( "sed -i '/casper/d' $dir-binary/$livedir/filesystem.manifest-desktop" );
+	}
+
+	if ( "$livedir" eq "live" ) {
+		this->run_system( "mv $dir-binary/$livedir/filesystem.manifest $dir-binary/$livedir/filesystem.packages" );
+		this->run_system( "echo > $dir-binary/$livedir/filesystem.packages-remove" );
+	}
+}
+# [1]
 
 1;
