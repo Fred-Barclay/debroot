@@ -1262,7 +1262,10 @@ menuentry "Try @DISTRO@ without installing" {
 	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ quiet splash ---
 	initrd	/@LIVEDIR@/@INITRD@
 }
-menuentry "Install @DISTRO@" {
+';
+	# for ubuntu
+	if ( "$livedir" eq "casper" ) {
+		$grub_cfg_content = $grub_cfg_content . 'menuentry "Install @DISTRO@" {
 	set gfxpayload=keep
 	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ only-ubiquity quiet splash ---
 	initrd	/@LIVEDIR@/@INITRD@
@@ -1278,13 +1281,35 @@ menuentry "Check disc for defects" {
 	initrd	/@LIVEDIR@/@INITRD@
 }
 ';
+	}
+
+	# for debian
+	if ( "$livedir" eq "live" ) {
+		$grub_cfg_content = $grub_cfg_content . 'menuentry "Install @DISTRO@" {
+	set gfxpayload=keep
+	linux	/install/vmlinuz vga=788 file=/cdrom/install/preseed.cfg --- quiet
+	initrd	/install/initrd.gz
+}
+menuentry "Graphical Install @DISTRO@" {
+	set gfxpayload=keep
+	linux	/install/gtk/vmlinuz video=vesa:ywrap,mtrr vga=788 file=/cdrom/install/preseed.cfg --- quiet
+	initrd	/install/gtk/initrd.gz
+}
+menuentry "Test memory" {
+	linux	/live/memtest
+}
+';
+	}
 
 	my $loopback_cfg_content = 'menuentry "Try @DISTRO@ without installing" {
 	set gfxpayload=keep
 	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ iso-scan/filename=${iso_path} quiet splash ---
 	initrd	/@LIVEDIR@/@INITRD@
 }
-menuentry "Install @DISTRO@" {
+';
+	# for ubuntu
+	if ( "$livedir" eq "casper" ) {
+		$loopback_cfg_content = $loopback_cfg_content . 'menuentry "Install @DISTRO@" {
 	linux	/@LIVEDIR@/@VMLINUZ@  file=/cdrom/preseed/@DISTRO@.seed boot=@LIVEDIR@ only-ubiquity iso-scan/filename=${iso_path} quiet splash ---
 	initrd	/@LIVEDIR@/@INITRD@
 }
@@ -1296,6 +1321,25 @@ menuentry "Test memory" {
 	linux16	/install/mt86plus
 }
 ';
+	}
+
+	# for debian
+	if ( "$livedir" eq "live" ) {
+		$loopback_cfg_content = $loopback_cfg_content . 'menuentry "Install @DISTRO@" {
+	set gfxpayload=keep
+	linux	/install/vmlinuz vga=788 file=/cdrom/install/preseed.cfg --- quiet
+	initrd	/install/initrd.gz
+}
+menuentry "GUI Install @DISTRO@" {
+	set gfxpayload=keep
+	linux	/install/gtk/vmlinuz video=vesa:ywrap,mtrr vga=788 file=/cdrom/install/preseed.cfg --- quiet
+	initrd	/install/gtk/initrd.gz
+}
+menuentry "Test memory" {
+	linux	/live/memtest
+}
+';
+	}
 
 	my $distro = "";
 	my $vmlinuz = "";
@@ -1343,6 +1387,7 @@ menuentry "Test memory" {
 }
 # [1]
 
+# [1]
 sub grab_grub_efi_file {
 	my $dir = shift;
 	my $livedir = shift;
