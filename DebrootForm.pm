@@ -527,6 +527,10 @@ sub on_pushButtonBuildLiveISO_clicked {
 		$isohybrid_options = "-isohybrid-mbr /tmp/isohdpfx.bin";
 	}
 	this->run_system_terminal( "cd $dir-binary && xorriso -as mkisofs $isohybrid_options -D -r -V \"debroot\" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $efiboot_options -o $isoname ." );
+	# inform user of what will be removed from chroot
+	Qt::MessageBox::information(this,
+		this->tr('Chroot Temporary Packages Removal'),
+		this->tr("If you are **not** going to build any more images and you want to use the chroot for other purposes then press Y to remove the temporary packages from the chroot.\n\nElse, keep them and press N; this way you do not have to re-install them the next time you build an image."));
 	this->remove_temp_pkg_chroot( $dir );
 	this->remove_temp_pkg_system();
 
@@ -697,6 +701,10 @@ sub on_pushButtonPrepareLiveISO_clicked {
 
 	# enable build live iso button
 	this->{ui}->{pushButtonBuildLiveISO}->setEnabled(1);
+	Qt::MessageBox::information(this,
+		this->tr( 'All prepared' ),
+		this->tr( "You have created the files for the image that will be included in the ISO file.\n\nYou can create/update them by removing the $dir-binary directory and click then 'Prepare ISO content' again.\n\nNow you can click the 'Build ISO' button to create the ISO file."));
+
 }
 # [1]
 
@@ -866,6 +874,10 @@ sub remove_temp_pkg_system {
 	} else {
 		print "$packages";
 		print "packages empty\n";
+		Qt::MessageBox::information(this,
+			this->tr('Empty system packages list'),
+			this->tr('No packages were temporarly installed in the system.'));
+
 		return 0;
 	}
 
@@ -897,11 +909,17 @@ sub remove_temp_pkg_chroot {
 	} else {
 		print "$packages";
 		print "packages empty\n";
+		Qt::MessageBox::information(this,
+			this->tr('Empty packages list'),
+			this->tr('No packages were temporarly installed in the chroot.'));
 		return 0;
 	}
 
 	if ( $packages =~ /^ *$/ ) {
 		print "all is installed.\n";
+		Qt::MessageBox::information(this,
+			this->tr('No chroot packages to remove'),
+			this->tr('All packages were already installed in the chroot.'));
 		return 0;
 	}
 
