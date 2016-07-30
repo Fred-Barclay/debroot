@@ -1077,7 +1077,7 @@ sub release_chroot {
 			this->run_system( "rm -f $dir/dev/null" );
 			$DebrootForm::there_was_no_dev_null = "true";
 		}
-		if ( $DebrootForm::there_was_no_dev_devpts eq "true" ) {
+		if ( $DebrootForm::there_was_no_dev_pts eq "true" ) {
 			this->run_system( "rm -rf $dir/dev/pts" );
 			$DebrootForm::there_was_no_dev_pts = "";
 		}
