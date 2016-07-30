@@ -63,6 +63,14 @@ sub NEW {
 	this->{ui}->{lineEditROOTFSDirectory}->insert('');
 	# disable windows resizing
 	setFixedSize(size());
+
+	# public vars for when chroots already have devices in /dev (kali)
+	package DebrootForm;
+	our $there_was_no_dev_random = "";
+	our $there_was_no_dev_urandom = "";
+	our $there_was_no_dev_null = "";
+	our $there_was_no_dev_pts = "";
+
 }
 # [0]
 
@@ -247,6 +255,11 @@ sub on_pushButtonSave_clicked {
 	}
 	close( $fh )
 		|| warn "close $sourcesfile failed: $!";
+
+	# repeat in script to add it to build "log"
+	this->run_system( "cat > $sourcesfile << 'EOF'\n$sourcescontent" );
+
+
 }
 # [1]
 
@@ -934,18 +947,23 @@ sub prepare_chroot {
 		this->run_system( "mknod $dir/dev/random c 1 8" );
 		this->run_system( "chmod 640 $dir/dev/random" );
 		this->run_system( "chown 0:0 $dir/dev/random" );
+		$DebrootForm::there_was_no_dev_random = "true";
 	}
 	if ( ! -e "$dir/dev/urandom" ) {
 		this->run_system( "mknod $dir/dev/urandom c 1 9" );
 		this->run_system( "chmod 640 $dir/dev/urandom" );
 		this->run_system( "chown 0:0 $dir/dev/urandom" );
+		$DebrootForm::there_was_no_dev_urandom = "true";
 	}
 	if ( ! -e "$dir/dev/null" ) {
 		this->run_system( "mknod $dir/dev/null c 1 3" );
 		this->run_system( "chmod 666 $dir/dev/null" );
+		$DebrootForm::there_was_no_dev_null = "true";
 	}
 	if ( ! -e "$dir/dev/pts" ) {
 		this->run_system( "mkdir -p $dir/dev/pts" );
+		$DebrootForm::there_was_no_dev_pts = "true";
+
 	}
 	# udev is almost a mount --bind /dev, reveals host hardware in chroot, not suitable here.
 	#this->run_system( "mount udev -t devtmpfs $dir/dev" );
@@ -1004,14 +1022,21 @@ sub release_chroot {
 	#this->run_system( "umount -l $dir/dev" );
 	# Only remove created files if /dev was not mounted elsewhere
 	if ( `df -P /dev | tail -1 | cut -d' ' -f 1` eq "-" ) {
-		if ( -e "$dir/dev/random" ) {
+		if ( $DebrootForm::there_was_no_dev_random eq "true" ) {
 			this->run_system( "rm -f $dir/dev/random" );
+			$DebrootForm::there_was_no_dev_random = "";
 		}
-		if ( -e "$dir/dev/urandom" ) {
+		if ( $DebrootForm::there_was_no_dev_urandom eq "true" ) {
 			this->run_system( "rm -f $dir/dev/urandom" );
+			$DebrootForm::there_was_no_dev_urandom = "";
 		}
-		if ( -e "$dir/dev/null" ) {
+		if ( $DebrootForm::there_was_no_dev_null eq "true" ) {
 			this->run_system( "rm -f $dir/dev/null" );
+			$DebrootForm::there_was_no_dev_null = "true";
+		}
+		if ( $DebrootForm::there_was_no_dev_devpts eq "true" ) {
+			this->run_system( "rm -rf $dir/dev/pts" );
+			$DebrootForm::there_was_no_dev_pts = "";
 		}
 	}
 
