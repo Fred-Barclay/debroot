@@ -1,3 +1,14 @@
+debroot (0.09) unstable; urgency=medium
+
+  * Only create and remove devices in /dev (kali) if we created them.
+  * When installing dbus, stop it.
+  * Give more info to user about some steps in the build process.
+  * Use same variable name in multiple places; less confusing.
+  * Create save and read file functions.
+  * Update README with new version and add links to forum threads.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Sat, 30 Jul 2016 18:27:34 +0100
+
 debroot (0.08) unstable; urgency=medium
 
   * Fix dpkg query to generate manifest of the live iso, in both ubuntu 
