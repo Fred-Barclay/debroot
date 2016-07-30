@@ -223,16 +223,9 @@ sub on_pushButtonRead_clicked {
 	my ( $value ) = @_;
 	my $dir = this->{ui}->{lineEditROOTFSDirectory}->displayText();
 	my $sourcesfile = "$dir"."/etc/apt/sources.list";
-	my $sourcescontent;
 	# read actual sources.list and put it in plainTextEditSourcesList
-	open( my $fh, "<", "$sourcesfile" )
-		|| die "Can't open < $sourcesfile: $!";
-	{
-		local $/;
-		$sourcescontent = <$fh>;
-	}
-	close( $fh )
-		|| warn "close $sourcesfile failed: $!";
+	my $sourcescontent = this->read_file( $sourcesfile );
+
 	this->{ui}->{plainTextEditSourcesList}->setPlainText( "$sourcescontent" );
 
 		# enable save sources file button
@@ -247,21 +240,51 @@ sub on_pushButtonSave_clicked {
 	my $sourcesfile = "$dir"."/etc/apt/sources.list";
 	my $sourcescontent = this->{ui}->{plainTextEditSourcesList}->toPlainText();
 	# write actual content of plainTextEditSourcesList to sources.list
-	open( my $fh, ">", "$sourcesfile" )
-		|| die "Can't open > $sourcesfile: $!";
-	{
-		local $/;
-		print $fh $sourcescontent;
-	}
-	close( $fh )
-		|| warn "close $sourcesfile failed: $!";
-
-	# repeat in script to add it to build "log"
-	this->run_system( "cat > $sourcesfile << 'EOF'\n$sourcescontent" );
-
-
+	this->save_file( $sourcesfile, $sourcescontent );
 }
 # [1]
+
+# [1]
+sub save_file {
+	my $file = shift;
+	my $content = shift;
+
+	open( my $fh, ">", "$file" )
+		|| die "Can't open > $file: $!";
+	{
+		local $/;
+		print $fh $content;
+	}
+	close( $fh )
+		|| warn "close $file failed: $!";
+
+	# repeat in script to add it to build "log"
+	this->run_system( "cat > $file << 'EOF'\n$content" );
+
+	return 0;
+}
+# [1]
+
+
+
+# [1]
+sub read_file {
+	my $file = shift;
+	my $content = undef;
+
+	open( my $fh, "<", "$file" )
+		|| die "Can't open < $file: $!";
+	{
+		local $/;
+		$content = <$fh>;
+	}
+	close( $fh )
+		|| warn "close $file failed: $!";
+
+	return $content;
+}
+# [1]
+
 
 # [1]
 sub on_pushButtonUpdate_clicked {

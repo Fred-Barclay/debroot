@@ -1,7 +1,6 @@
 # TODO/FIXME
 #
 # IMPROV: GUI: add a "apt clean" and a "apt autoremove --purge" buttons.
-# IMPROV: create functions to read and to save to files and use them in "Read" and "Write" buttons.
 # IMPROV: GUI: in install tab add a button to choose a script/hook to do automated stuff.
 # IMPROV: GUI: make "preseed" button work in "Install" tab.
 # IMPROV: GUI: in update tab add a button to clean apt. Add same button in Install tab.
