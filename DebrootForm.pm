@@ -155,12 +155,12 @@ sub on_pushButtonUnsquash_clicked {
 
 	this->run_system( "mount -o loop $iso $dir-iso" );
 
-	my $livesystem = this->get_livesystem( "$dir-iso" );
+	my $livedir = this->get_livesystem( "$dir-iso" );
 
 	this->install_temp_pkg_system( "rsync" );
-	this->run_system( "rsync --exclude=/$livesystem/filesystem.squashfs -a $dir-iso/ $dir-binary" );
+	this->run_system( "rsync --exclude=/$livedir/filesystem.squashfs -a $dir-iso/ $dir-binary" );
 
-	this->run_system_terminal( "unsquashfs -dest $dir/ $dir-iso/$livesystem/filesystem.squashfs" );
+	this->run_system_terminal( "unsquashfs -dest $dir/ $dir-iso/$livedir/filesystem.squashfs" );
 
 	this->run_system( "umount $dir-iso" );
 	this->run_system( "rmdir $dir-iso" );
@@ -562,16 +562,16 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	$distro = lc $distro;
 	$release =~ s/\n//g;
 
-	my $livesystem = undef;
+	my $livedir = undef;
 	if ( "$distro" eq "ubuntu" ) {
-		$livesystem = "casper";
+		$livedir = "casper";
 	} else {
 		# debian-live
-		$livesystem = "live";
+		$livedir = "live";
 	}
 
 	## create $dir-binary
-	this->run_system( "mkdir -p $dir-binary/$livesystem $dir-binary/isolinux" );
+	this->run_system( "mkdir -p $dir-binary/$livedir $dir-binary/isolinux" );
 
 	## check in rootfs what is the distro for casper or live-boot
 
@@ -619,7 +619,7 @@ sub on_pushButtonPrepareLiveISO_clicked {
 		# append to build script manally
 		system( "echo '$command' >> $dir-builds-script.sh" );
 
-		this->run_system( "cp $dir/boot/memtest86+.bin $dir-binary/$livesystem/memtest" );
+		this->run_system( "cp $dir/boot/memtest86+.bin $dir-binary/$livedir/memtest" );
 	} else {
 		this->run_system( "tar -xzf $dir/usr/share/gfxboot-theme-ubuntu/bootlogo.tar.gz -C $dir-binary/isolinux/" );
 		this->run_system( "cp -aL $dir/usr/share/syslinux/themes/$distro-$release/isolinux-live/* $dir-binary/isolinux/" );
