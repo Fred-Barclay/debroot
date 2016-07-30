@@ -26,6 +26,8 @@ Also see TODO file.
 
 # ROADMAP
 
+* run scripts/hooks in chroot;
+* support preseed files upon package install;
 * build non-live USB image;
 * add a custom script based installer to "replace" both ubiquity or debian-installer;
 
@@ -41,7 +43,7 @@ One can also build a debian package from sources with:
 
 Install it with gdebi:
 
-	sudo gdebi -o "APT::Install-Recommends=0" debroot_0.07_all.deb -nq
+	sudo gdebi -o "APT::Install-Recommends=0" debroot_0.09_all.deb -nq
 
 ### Execute
 
@@ -76,6 +78,10 @@ To update the GUI perl module after changes made in qt4-designer type:
 	make
 
 # How to
+
+[Forum thread in debian.forums.net](http://forums.debian.net/viewtopic.php?f=16&t=128995);
+
+[Forum thread in ubuntuforums.com](https://ubuntuforums.org/showthread.php?t=2330142);
 
 ## Quick build a clean live iso from stratch
 
