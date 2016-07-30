@@ -630,8 +630,10 @@ sub on_pushButtonPrepareLiveISO_clicked {
 		this->run_system( "mkdir -p $dir-binary/install; cp $dir/boot/memtest86+.bin $dir-binary/install/mt86plus" );
 	}
 
-	this->install_temp_pkg_chroot( $dir, "dbus" );
 	## run 'dbus-uuidgen > /var/lib/dbus/machine-id' in chroot and stop dbus with '/etc/init.d/dbus stop' so it doesnt leave /run/dbus/system_bus_socket behind.
+	this->install_temp_pkg_chroot( $dir, "dbus" );
+	this->run_chroot( "/etc/init.d/dbus stop" );
+
 	## install casper or live-boot in chroot
 	### and also install a kernel in none is present (from debootstrap)
 	my $live_packages = "";
