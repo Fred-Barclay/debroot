@@ -1,3 +1,10 @@
+debroot (0.10) unstable; urgency=medium
+
+  * Fix typo.
+  * Fix i386 ubuntu live iso creation.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Tue, 06 Sep 2016 14:19:43 +0100
+
 debroot (0.09) unstable; urgency=medium
 
   * Only create and remove devices in /dev (kali) if we created them.
