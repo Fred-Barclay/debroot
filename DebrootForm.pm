@@ -674,7 +674,12 @@ sub on_pushButtonPrepareLiveISO_clicked {
 	if ( "$distro" eq "ubuntu" ) {
 		$live_packages = "casper lupin-casper";
 		if (!glob("$dir/boot/vmlinuz-*")) {
-			$linux_packages = "linux-image-generic linux-signed-image-generic";
+			my $arch = this->get_chroot_arch( $dir );
+			if ( "$arch" eq "amd64" ) {
+				$linux_packages = "linux-image-generic linux-signed-image-generic";
+			} else {
+				$linux_packages = "linux-image-generic";
+			}
 		}
 		if (!glob("$dir/usr/share/doc/plymouth-theme-*" )) {
 			# install at least one plymouth theme, needed for integrity check
