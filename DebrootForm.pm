@@ -439,7 +439,7 @@ sub on_pushButtonBuildLiveISO_clicked {
 		} else {
 			$kernel = "linux-image-" . $kernel;
 		}
-		this->run_chroot_terminal( $dir, "apt-get install --reinstall $kernel" );
+		this->run_chroot_terminal( $dir, "apt-get update && apt-get install --reinstall -y $kernel" );
 		## run apt-get clean in chroot
 		this->run_chroot( $dir, "apt-get clean" );
 	}
