@@ -43,7 +43,7 @@ One can also build a debian package from sources with:
 
 Install it with gdebi:
 
-	sudo gdebi -o "APT::Install-Recommends=0" debroot_0.09_all.deb -nq
+	sudo gdebi -o "APT::Install-Recommends=0" debroot_0.XX_all.deb -nq
 
 ### Execute
 
