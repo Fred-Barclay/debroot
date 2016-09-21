@@ -1,3 +1,12 @@
+debroot (0.11) unstable; urgency=medium
+
+  * Run apt-get update before reinstalling kernel.
+  * Check if lzma compression was used in image and rebuild image 
+    accordingly (Fixes #1: Rebuilt LMDE 2 points to initrd.lz).
+  * Update README file.
+
+ -- Rui Miguel P. Bernardo <rui.bernardo.pt@gmail.com>  Wed, 21 Sep 2016 03:13:29 +0100
+
 debroot (0.10) unstable; urgency=medium
 
   * Fix typo.
