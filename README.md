@@ -123,6 +123,7 @@ This app works with either ubuntu and debian and their derivatives. It was teste
 
 * Ubuntu 16.04;
 * Debian 7 and 8 (although Debian produces Live daily builds, one can install additional packages with debroot);
+* Linux Mint (and LMDE2);
 * Kali Linux 2016.1;
 * TAILS 2.4;
 * Sparkylinux 4.3;

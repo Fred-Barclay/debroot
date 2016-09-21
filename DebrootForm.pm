@@ -421,6 +421,10 @@ sub on_pushButtonBuildLiveISO_clicked {
 
 	my $livedir = this->get_livesystem( $binarydir );
 
+	my $lz = undef;
+
+	$lz = `ls $dir-binary/$livedir/initrd.lz 2>/dev/null`;
+
 	## run apt-get clean in chroot
 	this->run_chroot( $dir, "apt-get clean" );
 
@@ -463,8 +467,8 @@ sub on_pushButtonBuildLiveISO_clicked {
 	this->run_system( "cp $dir/boot/initrd.img-* $dir-binary/$livedir/" );
 	my $latest_initrd_img = `cd $dir-binary/$livedir/ && ls -1 initrd.img* | grep -v efi | tail -n 1`;
 	$latest_initrd_img =~ s/\n//g;
-	if ( "$livedir" eq "casper" ) {
-		# in ubuntu
+	if ( ( "$livedir" eq "casper" ) || ( ! $lz eq "" ) ) {
+		# in ubuntu or with lzma compression (LMDE2)
 		this->install_temp_pkg_system( "lzma" );
 		this->run_system_terminal( "zcat $dir-binary/$livedir/$latest_initrd_img | lzma -c > $dir-binary/$livedir/initrd.lz" );
 	} else {
