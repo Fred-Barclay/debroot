@@ -14,6 +14,8 @@ Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends},
  libqtgui4-perl,
  xterm,
+ liblist-moreutils-perl,
+
 Description: An app that can create chroots, create a live iso from it and rebuild live isos.
  An app that can:
  * create (debootstrap) a debian or ubuntu system;
