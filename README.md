@@ -1,6 +1,6 @@
 # README
 
-![alt tag](https://raw.githubusercontent.com/rbern/debroot/master/debroot.png)
+![alt tag](https://raw.githubusercontent.com/Fred-Barclay/debroot/master/debroot.png)
 
 An app that can:
 
