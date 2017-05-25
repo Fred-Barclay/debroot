@@ -15,7 +15,6 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
  libqtgui4-perl,
  xterm,
  liblist-moreutils-perl,
-
 Description: An app that can create chroots, create a live iso from it and rebuild live isos.
  An app that can:
  * create (debootstrap) a debian or ubuntu system;
@@ -23,5 +22,3 @@ Description: An app that can create chroots, create a live iso from it and rebui
  * create a live iso from the created chroot filesystem;
  * unsquash, update and rebuild an existing ubuntu or debian and their derivatives live ISO image;
  * generates a script with all the commands that were executed to replicate the process on another host without debroot.
- .
- Please read README present in /usr/share/doc/debroot/ for examples.
